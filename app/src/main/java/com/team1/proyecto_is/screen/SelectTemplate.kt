@@ -87,7 +87,6 @@ fun Cake(){
         val startAngle = -45f
 
         for (i in 0 until 8) {
-            Box(){
                 drawArc(
                     color = colors[i],
                     startAngle = startAngle + i * 45f,
@@ -96,54 +95,6 @@ fun Cake(){
                     topLeft = Offset(centerX - radius, centerY - radius),
                     size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2)
                 )
-            }
-
-        }
-    }
-}
-
-@Composable
-fun PieChartWithClickableSlices() {
-    val colors = listOf(
-        Color.Red, Color.Blue, Color.Green, Color.Yellow,
-        Color.Cyan, Color.Magenta, Color.Gray, Color.Black
-    )
-    val startAngle = -45f
-
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        val with =
-        val centerX = size.width / 2
-        val centerY = size.height / 2
-        val radius = size.width / 3
-
-        for (i in 0 until 8) {
-            val sliceAngle = 45f
-            val sliceStartAngle = startAngle + i * sliceAngle
-
-            val sliceModifier = Modifier.clickable {
-                // Handle click action here
-                // For example, you can display a toast with the slice index
-                // or navigate to a different screen
-                println("Slice $i clicked")
-            }
-
-            Canvas(
-                modifier = sliceModifier
-                    .size(radius * 2)
-                    .offset { IntOffset((radius * 2) * i, 0) }
-            ) {
-                drawArc(
-                    color = colors[i],
-                    startAngle = sliceStartAngle,
-                    sweepAngle = sliceAngle,
-                    useCenter = true,
-                    topLeft = Offset(centerX - radius, centerY - radius),
-                    size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2),
-                    style = Stroke(50f)
-                )
-            }
         }
     }
 }
