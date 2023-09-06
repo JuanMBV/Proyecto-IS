@@ -29,7 +29,8 @@ class DataBase(context: Context?): SQLiteOpenHelper(context, "Ahora_Si.db", null
                     + "fecha_inicial TEXT,"
                     + "fecha_recordatorio TEXT,"
                     + "timer TEXT,"
-                    + "FOREIGN KEY(id_plantilla) REFERENCES plantillas(id_plantilla)"
+                    + "FOREIGN KEY(id_plantilla) REFERENCES plantillas(id_plantilla),"
+                    + "FOREIGN KEY(id_status) REFERENCES status(id_status)"
                     + ")"
         )
 
@@ -37,6 +38,7 @@ class DataBase(context: Context?): SQLiteOpenHelper(context, "Ahora_Si.db", null
         db.execSQL(
             "CREATE TABLE status ("
                     + "id_status INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "status INTEGER default 0,"
                     + "fecha_registro TEXT NOT NULL"
                     + ")"
         )
