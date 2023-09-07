@@ -2,6 +2,7 @@ package com.team1.proyecto_is.screen
 
 import android.util.Log
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -39,7 +41,8 @@ fun SelectTemplate(navController: NavController){
 @Composable
 fun ContentSelectTemplate(){
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.background(Color(0xFFFCFBF2))
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -57,7 +60,12 @@ fun ContentSelectTemplate(){
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = "Selecciona tu\nplantilla", fontSize = 30.sp, textAlign = TextAlign.Center)
+            Text(
+                text = "Selecciona tu\nplantilla",
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = Color(0xFF222222))
         }
 
         Row(
@@ -80,8 +88,8 @@ fun Cake(){
         val radius = size.width / 2
 
         val colors = listOf(
-            Color.Red, Color.Blue, Color.Green, Color.Yellow,
-            Color.Cyan, Color.Magenta, Color.Gray, Color.Black
+            Color(0xFF97C437), Color(0xFFFACE48), Color(0xFFF28E3C), Color(0xFFE63632),
+            Color(0xFFED4D83), Color(0xFFBE68C9), Color(0xFF3D65CA), Color(0xFF52C0C1)
         )
 
         val startAngle = -45f
