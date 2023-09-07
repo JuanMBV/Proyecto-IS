@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.navigation.AppNavigation
+import com.team1.proyecto_is.service.PlantillaService
 import com.team1.proyecto_is.ui.theme.ProyectoISTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,6 +31,9 @@ class MainActivity : ComponentActivity() {
                     // Initialize Data Base
                     val db = InitializeDatabaseConnection(this)
 
+                    InsertPlantillas(db)
+                    PrintPlantillas(db)
+
                     AppNavigation()
                 }
             }
@@ -40,6 +44,25 @@ class MainActivity : ComponentActivity() {
 fun InitializeDatabaseConnection(context: Context): DataBase{
     val db = DataBase(context)
     return db
+}
+
+fun InsertPlantillas(db: DataBase){
+    val plantillas = listOf("Estudiar", "Ejercicio", "Hobbies", "Comer", "Tarea", "Break", "Eventos", "Examen")
+    val plantillaService = PlantillaService(db)
+
+    for (nombrePlantilla in plantillas) {
+        if (!plantillaService.ExistePlantilla(nombrePlantilla)) {
+            plantillaService.InsertPlantilla(nombrePlantilla)
+        }
+    }
+}
+
+fun PrintPlantillas(db: DataBase){
+    var lista = PlantillaService(db).SelectNamePlantilla()
+
+    lista.forEach{elemento ->
+        println(elemento)
+    }
 }
 
 @Preview(showSystemUi = true)

@@ -1,29 +1,29 @@
 package com.team1.proyecto_is.model
 
-class Status(private var id_status: Int,
+class Status(private var idStatus: Int,
              private var status: Int,
-             private var fecha_registro: String) {
+             private var fechaRegistro: String) {
 
     constructor() : this(
         0, 0,""
     )
 
     fun getIdStatus(): Int{
-        return id_status
+        return idStatus
     }
     fun getStatus(): Int{
         return status
     }
     fun getFechaRegistro(): String{
-        return fecha_registro
+        return fechaRegistro
     }
     fun setIdStatus(idStatus: Int) {
-        this.id_status = idStatus
+        this.idStatus = idStatus
     }
     fun setStatus(status: Int){
         this.status = status
     }
     fun setFechaRegistro(fechaRegistro: String) {
-        this.fecha_registro = fechaRegistro
+        this.fechaRegistro = fechaRegistro
     }
 }

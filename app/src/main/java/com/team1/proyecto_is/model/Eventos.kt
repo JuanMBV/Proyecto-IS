@@ -1,15 +1,15 @@
 package com.team1.proyecto_is.model
 
-class Eventos(private var id_eventos: Int,
-              private var id_plantilla: Int,
-              private var id_status: Int,
+class Eventos(private var idEventos: Int,
+              private var idPlantilla: Int,
+              private var idStatus: Int,
               private var materia: String?,
-              private var parte_cuerpo: String?,
+              private var parteCuerpo: String?,
               private var descripcion: String?,
               private var comida: String?,
               private var lugar: String?,
-              private var fecha_inicial: String?,
-              private var fecha_recordatorio: String?,
+              private var fechaInicial: String?,
+              private var fechaRecordatorio: String?,
               private var timer: String?) {
 
     constructor(): this(
@@ -27,15 +27,15 @@ class Eventos(private var id_eventos: Int,
     )
 
     fun getIdEventos(): Int {
-        return id_eventos
+        return idEventos
     }
 
     fun getIdPlantilla(): Int {
-        return id_plantilla
+        return idPlantilla
     }
 
     fun getIdStatus(): Int {
-        return id_status
+        return idStatus
     }
 
     fun getMateria(): String? {
@@ -43,7 +43,7 @@ class Eventos(private var id_eventos: Int,
     }
 
     fun getParteCuerpo(): String? {
-        return parte_cuerpo
+        return parteCuerpo
     }
 
     fun getDescripcion(): String? {
@@ -59,30 +59,30 @@ class Eventos(private var id_eventos: Int,
     }
 
     fun getFechaInicial(): String? {
-        return fecha_inicial
+        return fechaInicial
     }
 
     fun getFechaRecordatorio(): String? {
-        return fecha_recordatorio
+        return fechaRecordatorio
     }
 
     fun getTimer(): String? {
         return timer
     }
     fun setIdEventos(idEventos: Int) {
-        this.id_eventos = idEventos
+        this.idEventos = idEventos
     }
     fun setIdPlantilla(idPlantilla: Int) {
-        this.id_plantilla = idPlantilla
+        this.idPlantilla = idPlantilla
     }
     fun setIdStatus(idStatus: Int) {
-        this.id_status = idStatus
+        this.idStatus = idStatus
     }
     fun setMateria(materia: String?) {
         this.materia = materia
     }
     fun setParteCuerpo(parteCuerpo: String?) {
-        this.parte_cuerpo = parteCuerpo
+        this.parteCuerpo = parteCuerpo
     }
     fun setDescripcion(descripcion: String?) {
         this.descripcion = descripcion
@@ -94,10 +94,10 @@ class Eventos(private var id_eventos: Int,
         this.lugar = lugar
     }
     fun setFechaInicial(fechaInicial: String?) {
-        this.fecha_inicial = fechaInicial
+        this.fechaInicial = fechaInicial
     }
     fun setFechaRecordatorio(fechaRecordatorio: String?) {
-        this.fecha_recordatorio = fechaRecordatorio
+        this.fechaRecordatorio = fechaRecordatorio
     }
     fun setTimer(timer: String?) {
         this.timer = timer
