@@ -17,7 +17,7 @@ class PlantillaService(private val dataBase: DataBase) {
 
         try {
            status = db.insert("Plantillas", null ,values)
-            Log.d("inserPLantilla", "Se insertó correctamente")
+            Log.d("insertPlantilla", "Se insertó correctamente")
 
 
         } catch (e: Exception){

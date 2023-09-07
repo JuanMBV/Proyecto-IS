@@ -23,14 +23,14 @@ class Eventos(private var id_eventos: Int,
         "",
         "",
         "",
-        "",
+        ""
     )
 
-    fun getIdEventos(): Int {
+    fun getIdEventos(): Int{
         return id_eventos
     }
 
-    fun getIdPlantilla(): Int {
+    fun getIdPlantilla(): Int{
         return id_plantilla
     }
 
