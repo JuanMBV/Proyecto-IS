@@ -31,15 +31,17 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.team1.proyecto_is.R
+import com.team1.proyecto_is.navigation.AppScreens
 
 @Composable
 fun SelectTemplate(navController: NavController){
-    ContentSelectTemplate()
+    ContentSelectTemplate(navController)
 }
 
 @Composable
-fun ContentSelectTemplate(){
+fun ContentSelectTemplate(navController: NavController){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.background(Color(0xFFFCFBF2))
@@ -48,7 +50,9 @@ fun ContentSelectTemplate(){
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                navController.navigate(AppScreens.ViewEvents.route)
+            }) {
                 Icon(
                     painter = painterResource(R.drawable.icon_close),
                     contentDescription = ""
@@ -81,7 +85,9 @@ fun ContentSelectTemplate(){
 @Composable
 fun Cake(){
     Canvas(
-        modifier = Modifier.fillMaxSize().padding(top = 180.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 180.dp)
     ) {
         val centerX = size.width / 2
         val centerY = size.height / 2
@@ -110,5 +116,6 @@ fun Cake(){
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewSelectTemplate(){
-    ContentSelectTemplate()
+    val navController = rememberNavController()
+    ContentSelectTemplate(navController)
 }
