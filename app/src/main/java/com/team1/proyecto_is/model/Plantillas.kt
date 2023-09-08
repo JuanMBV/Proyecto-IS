@@ -17,5 +17,7 @@ class Plantillas(private var idPlantilla: Int,
     fun setNombre(nombre: String){
         this.nombre = nombre
     }
-
+    override fun toString(): String {
+        return "id_plantilla: $idPlantilla, nombre: $nombre"
+    }
 }
