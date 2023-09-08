@@ -1,5 +1,6 @@
 package com.team1.proyecto_is.screen
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,17 +30,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.R
+import com.team1.proyecto_is.model.*
+import com.team1.proyecto_is.service.*
 import com.team1.proyecto_is.ui.theme.*
+import com.team1.proyecto_is.MainActivity
 
 
 @Composable
-fun ViewEvents(navController: NavController){
-    ContentViewEvents()
+fun ViewEvents(navController: NavController, dataBase: DataBase){
+    ContentViewEvents(dataBase)
 }
 
 @Composable
-fun ContentViewEvents() {
+fun ContentViewEvents(dataBase: DataBase) {
     Column(
         modifier = Modifier.background(Color(0xFFFCFBF2)),
     ) {
@@ -76,7 +81,7 @@ fun ContentViewEvents() {
         Row() {
             // de parametros deberia de tener algo que nos indique el evento que es para asignarle
             // el color y el texto que esta dentro. a lo mejor un objeto
-            EventsList()
+            EventsList(dataBase)
             }
         }
     }
@@ -84,19 +89,19 @@ fun ContentViewEvents() {
 
 
 @Composable
-fun EventsList(){
-    val datos : List<String> = listOf(
-        "Evento 1",
-        "Evento 2",
-        "Evento 3",
-        "Evento 4",
-        "Evento 5")
+fun EventsList(dataBase: DataBase){
+
+    val eventosService = EventosService(dataBase)
+    eventosService.SelectAllEvents()
+
+
+    var listEvents: List<Eventos> = eventosService.SelectAllEvents()
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ){
         // le puse mientras 10 pero aqui deberia de tomar los datos del select de la db
-        items(datos) {
-            item -> ListItemRow(item,)
+        items(listEvents) {
+            item -> ListItemRow(item)
         }
     }
 }
@@ -106,61 +111,88 @@ fun EventsList(){
 // parametros
 //descripcion
 //num plantilla
-fun ListItemRow(item: String){
+fun ListItemRow(evento : Eventos){
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
             // el color se va a definir de acuerdo a la plantilla
-            .background(ChooseColor(3))
+            .background(ChooseColor(evento.getPlantilla()?.getIdPlantilla()))
             .padding(horizontal = 20.dp, vertical = 15.dp)
 
     ){
-        Text(item,
+        Text(
+            text = ChooseText(evento).toString(),
             fontSize = 20.sp,
             )
+
     }
 }
 
 // metodo en el que dependiendo del número de plantilla, asigna color
 //al fondo del objeto de la lista
 @Composable
-fun ChooseColor(idPlantilla : Int) : Color {
+fun ChooseColor(idPlantilla : Int?) : Color {
     when (idPlantilla) {
         //1 Estudiar - Rojo
         1 -> {
-            return Color(0xFFE63632)
+            return rojo
         }
         //2 Ejercicio - Naranja
         2 -> {
-            return Color(0xFFF28E3C)
+            return naranja
         }
         //3 Hobbies - Amarillo
         3 -> {
-            return Color(0xFFFACE48)
+            return amarillo
         }
         //4 Comer - Verde
         4 -> {
-            return Color(0xFF97C437)
+            return verde
         }
         //5 Tarea - Turquesa
         5 -> {
-            return Color(0xFF52C0C1)
+            return turquesa
         }
         //6 Break - Azul
         6 -> {
-            return Color(0xFF3D65CA)
+            return azul
         }
         //7 Eventos - Morado
         7 -> {
-            return Color(0xFFBE68C9)
+            return morado
         }
         //8 Examen - Rosa
         8 -> {
-            return Color(0xFFED4D83)
+            return rosa
         }
         else -> {
-            return Color(0xFFFCFBF2)
+            return fondo
+        }
+    }
+}
+
+@Composable
+fun ChooseText(evento: Eventos) : String? {
+    when (evento.getPlantilla()?.getIdPlantilla()) {
+        //1 Estudiar, 5 Tareas, 8 Examen - Materia
+        1, 5, 8 -> {
+            return evento.getMateria()
+        }
+        //2 Ejercicio - Naranja
+        2 -> {
+            return evento.getParteCuerpo()
+        }
+        //3 Hobbies, 6 Eventos, 7 Break - Amarillo
+        3,6,7 -> {
+            return evento.getDescripcion()
+        }
+        //4 Comer - Verde
+        4 -> {
+            return evento.getComida()
+        }
+        else -> {
+            return ""
         }
     }
 }
@@ -168,11 +200,14 @@ fun ChooseColor(idPlantilla : Int) : Color {
 
 
 // programacion
-
+/*
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewViewEvents() {
+    val mainActivity = MainActivity()
+    mainActivity.Initialize
     ContentViewEvents()
 }
+*/
 
 

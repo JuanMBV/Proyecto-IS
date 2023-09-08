@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     PrintPlantillas(db)
                     InsertEventos(db)
                     PrintEventos(db)
-                    AppNavigation()
+                    AppNavigation(db)
                 }
             }
         }
@@ -84,12 +84,14 @@ fun PrintEventos(db: DataBase){
         println(element.toString())
     }
 }
-
+/*
 @Preview(showSystemUi = true)
 @Composable
 fun GreetingPreview() {
     ProyectoISTheme {
+        val db = InitializeDatabaseConnection(this)
         AppNavigation()
     }
 
 }
+*/
