@@ -1,41 +1,41 @@
 package com.team1.proyecto_is.model
 
-class Eventos(private var id_eventos: Int,
-              private var id_plantilla: Int,
-              private var id_status: Int,
+import java.time.LocalDateTime
+
+class Eventos(private var idEventos: Int,
+              private var plantilla: Plantillas?,
               private var materia: String?,
-              private var parte_cuerpo: String?,
+              private var parteCuerpo: String?,
               private var descripcion: String?,
               private var comida: String?,
               private var lugar: String?,
-              private var fecha_inicial: String?,
-              private var fecha_recordatorio: String?,
+              private var status: Int,
+              private var fechaRegistro: LocalDateTime?,
+              private var fechaInicial: LocalDateTime?,
+              private var fechaFinal: LocalDateTime?,
               private var timer: String?) {
 
     constructor(): this(
         0,
-        0,
-         0,
+        null,
          "",
         "",
         "",
         "",
         "",
+        0,
+        LocalDateTime.MIN,
+        LocalDateTime.MIN,
+        LocalDateTime.MIN,
         "",
-        "",
-        ""
     )
 
-    fun getIdEventos(): Int{
-        return id_eventos
+    fun getIdEventos(): Int {
+        return idEventos
     }
 
-    fun getIdPlantilla(): Int{
-        return id_plantilla
-    }
-
-    fun getIdStatus(): Int {
-        return id_status
+    fun getPlantilla(): Plantillas? {
+        return plantilla
     }
 
     fun getMateria(): String? {
@@ -43,7 +43,7 @@ class Eventos(private var id_eventos: Int,
     }
 
     fun getParteCuerpo(): String? {
-        return parte_cuerpo
+        return parteCuerpo
     }
 
     fun getDescripcion(): String? {
@@ -58,48 +58,73 @@ class Eventos(private var id_eventos: Int,
         return lugar
     }
 
-    fun getFechaInicial(): String? {
-        return fecha_inicial
+    fun getStatus(): Int{
+        return status
     }
 
-    fun getFechaRecordatorio(): String? {
-        return fecha_recordatorio
+    fun getFechaRegistro(): LocalDateTime?{
+        return fechaRegistro
+    }
+
+    fun getFechaInicial(): LocalDateTime? {
+        return fechaInicial
+    }
+
+    fun getFechaFinal(): LocalDateTime? {
+        return fechaFinal
     }
 
     fun getTimer(): String? {
         return timer
     }
     fun setIdEventos(idEventos: Int) {
-        this.id_eventos = idEventos
+        this.idEventos = idEventos
     }
-    fun setIdPlantilla(idPlantilla: Int) {
-        this.id_plantilla = idPlantilla
+    fun setPlantilla(plantilla: Plantillas) {
+        this.plantilla = plantilla
     }
-    fun setIdStatus(idStatus: Int) {
-        this.id_status = idStatus
-    }
+
     fun setMateria(materia: String?) {
         this.materia = materia
     }
+
     fun setParteCuerpo(parteCuerpo: String?) {
-        this.parte_cuerpo = parteCuerpo
+        this.parteCuerpo = parteCuerpo
     }
+
     fun setDescripcion(descripcion: String?) {
         this.descripcion = descripcion
     }
+
     fun setComida(comida: String?) {
         this.comida = comida
     }
+
     fun setLugar(lugar: String?) {
         this.lugar = lugar
     }
-    fun setFechaInicial(fechaInicial: String?) {
-        this.fecha_inicial = fechaInicial
+
+    fun setStatus(status: Int){
+        this.status = status
     }
-    fun setFechaRecordatorio(fechaRecordatorio: String?) {
-        this.fecha_recordatorio = fechaRecordatorio
+
+    fun setFechaRegistro(fechaRegistro: LocalDateTime?){
+        this.fechaRegistro = fechaRegistro
     }
+
+    fun setFechaInicial(fechaInicial: LocalDateTime?) {
+        this.fechaInicial = fechaInicial
+    }
+
+    fun setFechaFinal(fechaFinal: LocalDateTime?) {
+        this.fechaFinal = fechaFinal
+    }
+
     fun setTimer(timer: String?) {
         this.timer = timer
+    }
+
+    override fun toString(): String {
+        return "Eventos(idEventos=$idEventos, plantilla=$plantilla, materia=$materia, parteCuerpo=$parteCuerpo, descripcion=$descripcion, comida=$comida, lugar=$lugar, status=$status, fechaRegistro=$fechaRegistro, fechaInicial=$fechaInicial, fechaFinal=$fechaFinal, timer=$timer)"
     }
 }

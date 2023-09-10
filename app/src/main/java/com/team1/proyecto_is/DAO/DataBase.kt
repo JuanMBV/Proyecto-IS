@@ -20,26 +20,17 @@ class DataBase(context: Context?): SQLiteOpenHelper(context, "Ahora_Si.db", null
             "CREATE TABLE eventos ("
                     + "id_eventos INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + "id_plantilla INTEGER,"
-                    + "id_status INTEGER,"
                     + "materia TEXT,"
                     + "parte_cuerpo TEXT,"
                     + "descripcion TEXT,"
                     + "comida TEXT,"
                     + "lugar TEXT,"
-                    + "fecha_inicial TEXT,"
-                    + "fecha_recordatorio TEXT,"
+                    + "status INTEGER DEFAULT 0,"
+                    + "fecha_registro DATETIME,"
+                    + "fecha_inicial DATETIME,"
+                    + "fecha_final DATETIME,"
                     + "timer TEXT,"
-                    + "FOREIGN KEY(id_plantilla) REFERENCES plantillas(id_plantilla),"
-                    + "FOREIGN KEY(id_status) REFERENCES status(id_status)"
-                    + ")"
-        )
-
-        // Crear la tabla Estatus
-        db.execSQL(
-            "CREATE TABLE status ("
-                    + "id_status INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + "status INTEGER default 0,"
-                    + "fecha_registro TEXT NOT NULL"
+                    + "FOREIGN KEY(id_plantilla) REFERENCES plantillas(id_plantilla)"
                     + ")"
         )
     }
@@ -48,7 +39,6 @@ class DataBase(context: Context?): SQLiteOpenHelper(context, "Ahora_Si.db", null
         // Manejar actualizaciones de la base de datos si es necesario
         db.execSQL("DROP TABLE IF EXISTS plantillas")
         db.execSQL("DROP TABLE IF EXISTS eventos")
-        db.execSQL("DROP TABLE IF EXISTS status")
         onCreate(db)
     }
 }
