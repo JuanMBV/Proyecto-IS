@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.team1.proyecto_is.R
 import com.team1.proyecto_is.navigation.AppScreens
+import com.team1.proyecto_is.ui.theme.nunito
 
 @Composable
 fun SelectTemplate(navController: NavController){
@@ -69,6 +70,7 @@ fun ContentSelectTemplate(navController: NavController){
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
+                fontFamily = nunito,
                 color = Color(0xFF222222))
         }
 

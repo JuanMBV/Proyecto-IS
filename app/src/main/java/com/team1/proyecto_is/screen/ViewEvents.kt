@@ -1,28 +1,43 @@
+
+
+
 package com.team1.proyecto_is.screen
 
 import android.content.Context
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -58,7 +73,8 @@ fun ContentViewEvents(dataBase: DataBase) {
                 text = "Eventos",
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Justify
+                textAlign = TextAlign.Justify,
+                fontFamily = nunito
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -69,7 +85,7 @@ fun ContentViewEvents(dataBase: DataBase) {
                         painter = painterResource(R.drawable.icon_check),
                         contentDescription = "",
                     )
-            }
+                }
             }
         }
     }
@@ -77,17 +93,17 @@ fun ContentViewEvents(dataBase: DataBase) {
         modifier = Modifier.padding(start = 20.dp, top = 120.dp, end = 20.dp),
         verticalArrangement = Arrangement.Top,
 
-    ){
+        ){
         Row() {
             // de parametros deberia de tener algo que nos indique el evento que es para asignarle
             // el color y el texto que esta dentro. a lo mejor un objeto
             EventsList(dataBase)
-            }
         }
     }
+}
 
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventsList(dataBase: DataBase){
 
@@ -97,11 +113,39 @@ fun EventsList(dataBase: DataBase){
 
     var listEvents: List<Eventos> = eventosService.SelectAllEvents()
     LazyColumn(
+        state = rememberLazyListState(),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ){
         // le puse mientras 10 pero aqui deberia de tomar los datos del select de la db
         items(listEvents) {
-            item -> ListItemRow(item)
+                item ->
+
+            val state = rememberDismissState(
+                confirmValueChange = {
+                    // si el usuario deslizo de derecha a izquierda (eliminar)
+                    if (it == DismissValue.DismissedToStart){
+                        //elimina el evento
+                    } else if (it == DismissValue.DismissedToEnd){
+                        // manda el evento a completados
+                    }
+                    true
+                }
+            )
+
+            SwipeToDismiss(
+                state = state,
+                background = {
+                    val color =
+                        when(state.dismissDirection){
+                            DismissDirection.EndToStart -> Color.Transparent
+                        DismissDirection.StartToEnd -> Color.Transparent
+                        null -> Color.Transparent
+                    }
+                },
+                dismissContent = {
+                    ListItemRow(item)
+                })
+
         }
     }
 }
@@ -117,14 +161,22 @@ fun ListItemRow(evento : Eventos){
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.medium)
             // el color se va a definir de acuerdo a la plantilla
-            .background(ChooseColor(evento.getPlantilla()?.getIdPlantilla()))
+            .background(
+                ChooseColor(
+                    evento
+                        .getPlantilla()
+                        ?.getIdPlantilla()
+                )
+            )
             .padding(horizontal = 20.dp, vertical = 15.dp)
+            //.clickable(onClick = (TODO()))
 
     ){
         Text(
             text = ChooseText(evento).toString(),
             fontSize = 20.sp,
-            )
+            fontFamily = nunito
+        )
 
     }
 }
@@ -200,14 +252,11 @@ fun ChooseText(evento: Eventos) : String? {
 
 
 // programacion
-/*
+
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewViewEvents() {
     val mainActivity = MainActivity()
-    mainActivity.Initialize
-    ContentViewEvents()
+    ContentViewEvents(mainActivity.InitializeDatabaseConnection(LocalContext.current))
 }
-*/
-
 
