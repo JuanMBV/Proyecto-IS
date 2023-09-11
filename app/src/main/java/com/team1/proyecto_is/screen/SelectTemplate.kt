@@ -67,6 +67,7 @@ fun ContentSelectTemplate(navController: NavController){
         ) {
             Text(
                 text = "Selecciona tu\nplantilla",
+                modifier = Modifier.padding(bottom = 20.dp),
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
