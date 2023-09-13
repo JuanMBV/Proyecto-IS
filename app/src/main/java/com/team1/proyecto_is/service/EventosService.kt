@@ -74,12 +74,12 @@ class EventosService(private val dataBase: DataBase) {
     }
 
     fun SelectAllEvents(): List<Eventos>{
-        var listEvents: MutableList<Eventos> = mutableListOf()
+        val listEvents: MutableList<Eventos> = mutableListOf()
 
         val db = dataBase.readableDatabase
 
         try {
-            db.rawQuery("SELECT * FROM eventos", null).use { cursor ->
+            db.rawQuery("SELECT * FROM eventos WHERE status = 0 ORDER BY fecha_final DESC", null).use { cursor ->
                 while (cursor.moveToNext()) {
                     val events = Eventos()
                     events.setIdEventos(cursor.getInt(0))
@@ -92,7 +92,6 @@ class EventosService(private val dataBase: DataBase) {
                     events.setLugar(cursor.getStringOrNull(6))
                     events.setStatus(cursor.getInt(7))
 
-                    // Manejo de las fechas nulas
                     val fechaRegistroString = cursor.getString(8)
                     val fechaInicialString = cursor.getString(9)
                     val fechaFinalString = cursor.getString(10)
@@ -126,4 +125,143 @@ class EventosService(private val dataBase: DataBase) {
         return listEvents
     }
 
+    fun SelectCompleteEvents(): List<Eventos>{
+        val listEvents: MutableList<Eventos> = mutableListOf()
+
+        val db = dataBase.readableDatabase
+
+        try {
+            db.rawQuery("SELECT * FROM eventos WHERE status = 1", null).use { cursor ->
+                while (cursor.moveToNext()) {
+                    val events = Eventos()
+                    events.setIdEventos(cursor.getInt(0))
+                    val plantilla: Plantillas = PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
+                    events.setPlantilla(plantilla)
+                    events.setMateria(cursor.getStringOrNull(2))
+                    events.setParteCuerpo(cursor.getStringOrNull(3))
+                    events.setDescripcion(cursor.getStringOrNull(4))
+                    events.setComida(cursor.getStringOrNull(5))
+                    events.setLugar(cursor.getStringOrNull(6))
+                    events.setStatus(cursor.getInt(7))
+
+                    val fechaRegistroString = cursor.getString(8)
+                    val fechaInicialString = cursor.getString(9)
+                    val fechaFinalString = cursor.getString(10)
+
+                    events.setFechaRegistro(if (!fechaRegistroString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaRegistroString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setFechaInicial(if (!fechaInicialString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaInicialString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setFechaFinal(if (!fechaFinalString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaFinalString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setTimer(cursor.getStringOrNull(10))
+                    //println(events.toString())
+                    listEvents.add(events)
+                }
+            }
+        }catch (e: Exception){
+            Log.d("Error SelectCompleteEvents", e.toString())
+        }
+        return listEvents
+    }
+
+    fun SelectPerPlantilla(idPlantilla: Int): List<Eventos>{
+        val listEvents: MutableList<Eventos> = mutableListOf()
+
+        val db = dataBase.readableDatabase
+
+        try {
+            db.rawQuery("SELECT * FROM eventos WHERE id_plantilla = $idPlantilla ORDER BY fecha_final DESC", null).use { cursor ->
+                while (cursor.moveToNext()) {
+                    val events = Eventos()
+                    events.setIdEventos(cursor.getInt(0))
+                    val plantilla: Plantillas = PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
+                    events.setPlantilla(plantilla)
+                    events.setMateria(cursor.getStringOrNull(2))
+                    events.setParteCuerpo(cursor.getStringOrNull(3))
+                    events.setDescripcion(cursor.getStringOrNull(4))
+                    events.setComida(cursor.getStringOrNull(5))
+                    events.setLugar(cursor.getStringOrNull(6))
+                    events.setStatus(cursor.getInt(7))
+
+                    val fechaRegistroString = cursor.getString(8)
+                    val fechaInicialString = cursor.getString(9)
+                    val fechaFinalString = cursor.getString(10)
+
+                    events.setFechaRegistro(if (!fechaRegistroString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaRegistroString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setFechaInicial(if (!fechaInicialString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaInicialString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setFechaFinal(if (!fechaFinalString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaFinalString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setTimer(cursor.getStringOrNull(10))
+                    //println(events.toString())
+                    listEvents.add(events)
+                }
+            }
+        }catch (e: Exception){
+            Log.d("Error SelectPerPlantilla", e.toString())
+        }
+        return listEvents
+    }
+
+    fun DeleteEvent(idEvent: Int): Int{
+        val db = dataBase.writableDatabase
+
+        var rowsDeleted = 0
+
+        try {
+            rowsDeleted = db.delete("eventos", "id=?", arrayOf(idEvent.toString()))
+            Log.d("DeleteEvent", "Se elimino correctamente")
+        }catch(e: Exception){
+            Log.d("DeleteEvent", e.toString())
+        }finally {
+            db.close()
+        }
+        return rowsDeleted
+    }
+
+    fun CompleteEvent(idEvent: Int): Int{
+        val db = dataBase.writableDatabase
+
+        val values = ContentValues().apply {
+            put("status", 1)
+        }
+
+        var rowsAffected = 0
+
+        try {
+            rowsAffected = db.update("eventos", values, "id_evento = ?", arrayOf(idEvent.toString()))
+            Log.d("CompleteEvent", "Se completo el evento!")
+        }catch (e: Exception){
+            Log.d("Error CompleteEvent", e.toString())
+        }finally {
+            db.close()
+        }
+        return rowsAffected
+    }
 }
