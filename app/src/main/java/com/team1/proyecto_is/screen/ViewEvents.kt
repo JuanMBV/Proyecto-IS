@@ -3,6 +3,7 @@
 
 package com.team1.proyecto_is.screen
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,10 +29,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -51,6 +52,11 @@ import com.team1.proyecto_is.model.*
 import com.team1.proyecto_is.service.*
 import com.team1.proyecto_is.ui.theme.*
 import com.team1.proyecto_is.MainActivity
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+
 
 
 @Composable
@@ -103,35 +109,49 @@ fun ContentViewEvents(dataBase: DataBase) {
 }
 
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventsList(dataBase: DataBase){
-
+    //val popup = remember { mutableStateOf(false) }
     val eventosService = EventosService(dataBase)
-    eventosService.SelectAllEvents()
-
-
-    var listEvents: List<Eventos> = eventosService.SelectAllEvents()
+// Cambia la declaración de listEvents
+    val listEvents = remember { mutableStateListOf<Eventos>() }
+// Llena la lista con los elementos de eventosService.SelectAllEvents()
+    listEvents.addAll(eventosService.SelectAllEvents())
     LazyColumn(
         state = rememberLazyListState(),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ){
-        // le puse mientras 10 pero aqui deberia de tomar los datos del select de la db
+        // por cada item de la lista de objetos listEvents
         items(listEvents) {
                 item ->
-
             val state = rememberDismissState(
                 confirmValueChange = {
-                    // si el usuario deslizo de derecha a izquierda (eliminar)
-                    if (it == DismissValue.DismissedToStart){
-                        //elimina el evento
-                    } else if (it == DismissValue.DismissedToEnd){
-                        // manda el evento a completados
+                    when(it){
+                        DismissValue.DismissedToEnd ->{
+                            // para completar el evento (izquierda a derecha)
+                            /**popup.value = true
+                            if (popup.value)
+                            {*/
+                                //popUpComplete(ChooseText(item.getPlantilla().getIdPlantilla()))
+                                eventosService.CompleteEvent(item.getIdEventos())
+                                listEvents.remove(item)
+                            //}
+                        }
+                        DismissValue.DismissedToStart ->{
+                            //para eliminar el evento (derecha a izquierda)
+                            eventosService.DeleteEvent(item.getIdEventos())
+                            listEvents.remove(item)
+                        }
+                        DismissValue.Default->{
+                            // cuando lo deja a medias
+                        }
                     }
                     true
                 }
             )
-
             SwipeToDismiss(
                 state = state,
                 background = {
@@ -144,7 +164,8 @@ fun EventsList(dataBase: DataBase){
                 },
                 dismissContent = {
                     ListItemRow(item)
-                })
+                },
+            )
 
         }
     }
@@ -175,7 +196,8 @@ fun ListItemRow(evento : Eventos){
         Text(
             text = ChooseText(evento).toString(),
             fontSize = 20.sp,
-            fontFamily = nunito
+            fontFamily = nunito,
+            color = Color.White
         )
 
     }
@@ -249,6 +271,34 @@ fun ChooseText(evento: Eventos) : String? {
     }
 }
 
+@Composable
+fun popUpComplete(texto : String?){
+    val context = LocalContext.current
+    val openDialog = remember { mutableStateOf(true) }
+
+    if (openDialog.value) {
+        AlertDialog(
+            onDismissRequest = { openDialog.value = false },
+            title = { Text( text = "Completar" ) },
+            text = { Text(text = "$texto\n¿Estás seguro que deseas completar?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text(text = "Completar", color = Color.Black)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { openDialog.value = false }
+                ) { Text(text = "Cancelar", color = Color.Black) }
+            },
+        )
+    }
+
+}
 
 
 // programacion
