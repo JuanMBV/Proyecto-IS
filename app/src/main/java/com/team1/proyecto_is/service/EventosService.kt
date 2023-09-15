@@ -74,12 +74,12 @@ class EventosService(private val dataBase: DataBase) {
     }
 
     fun SelectAllEvents(): List<Eventos>{
-        var listEvents: MutableList<Eventos> = mutableListOf()
+        val listEvents: MutableList<Eventos> = mutableListOf()
 
         val db = dataBase.readableDatabase
 
         try {
-            db.rawQuery("SELECT * FROM eventos", null).use { cursor ->
+            db.rawQuery("SELECT * FROM eventos WHERE status = 0 ORDER BY fecha_final DESC", null).use { cursor ->
                 while (cursor.moveToNext()) {
                     val events = Eventos()
                     events.setIdEventos(cursor.getInt(0))
@@ -92,7 +92,6 @@ class EventosService(private val dataBase: DataBase) {
                     events.setLugar(cursor.getStringOrNull(6))
                     events.setStatus(cursor.getInt(7))
 
-                    // Manejo de las fechas nulas
                     val fechaRegistroString = cursor.getString(8)
                     val fechaInicialString = cursor.getString(9)
                     val fechaFinalString = cursor.getString(10)
@@ -126,4 +125,324 @@ class EventosService(private val dataBase: DataBase) {
         return listEvents
     }
 
+    fun SelectCompleteEvents(): List<Eventos>{
+        val listEvents: MutableList<Eventos> = mutableListOf()
+
+        val db = dataBase.readableDatabase
+
+        try {
+            db.rawQuery("SELECT * FROM eventos WHERE status = 1", null).use { cursor ->
+                while (cursor.moveToNext()) {
+                    val events = Eventos()
+                    events.setIdEventos(cursor.getInt(0))
+                    val plantilla: Plantillas = PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
+                    events.setPlantilla(plantilla)
+                    events.setMateria(cursor.getStringOrNull(2))
+                    events.setParteCuerpo(cursor.getStringOrNull(3))
+                    events.setDescripcion(cursor.getStringOrNull(4))
+                    events.setComida(cursor.getStringOrNull(5))
+                    events.setLugar(cursor.getStringOrNull(6))
+                    events.setStatus(cursor.getInt(7))
+
+                    val fechaRegistroString = cursor.getString(8)
+                    val fechaInicialString = cursor.getString(9)
+                    val fechaFinalString = cursor.getString(10)
+
+                    events.setFechaRegistro(if (!fechaRegistroString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaRegistroString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setFechaInicial(if (!fechaInicialString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaInicialString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setFechaFinal(if (!fechaFinalString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaFinalString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setTimer(cursor.getStringOrNull(10))
+                    //println(events.toString())
+                    listEvents.add(events)
+                }
+            }
+        }catch (e: Exception){
+            Log.d("Error SelectCompleteEvents", e.toString())
+        }
+        return listEvents
+    }
+
+    fun SelectPerPlantilla(idPlantilla: Int): List<Eventos>{
+        val listEvents: MutableList<Eventos> = mutableListOf()
+
+        val db = dataBase.readableDatabase
+
+        try {
+            db.rawQuery("SELECT * FROM eventos WHERE id_plantilla = $idPlantilla ORDER BY fecha_final DESC", null).use { cursor ->
+                while (cursor.moveToNext()) {
+                    val events = Eventos()
+                    events.setIdEventos(cursor.getInt(0))
+                    val plantilla: Plantillas = PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
+                    events.setPlantilla(plantilla)
+                    events.setMateria(cursor.getStringOrNull(2))
+                    events.setParteCuerpo(cursor.getStringOrNull(3))
+                    events.setDescripcion(cursor.getStringOrNull(4))
+                    events.setComida(cursor.getStringOrNull(5))
+                    events.setLugar(cursor.getStringOrNull(6))
+                    events.setStatus(cursor.getInt(7))
+
+                    val fechaRegistroString = cursor.getString(8)
+                    val fechaInicialString = cursor.getString(9)
+                    val fechaFinalString = cursor.getString(10)
+
+                    events.setFechaRegistro(if (!fechaRegistroString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaRegistroString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setFechaInicial(if (!fechaInicialString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaInicialString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setFechaFinal(if (!fechaFinalString.isNullOrEmpty()) {
+                        LocalDateTime.parse(fechaFinalString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    } else {
+                        null
+                    })
+
+                    events.setTimer(cursor.getStringOrNull(10))
+                    //println(events.toString())
+                    listEvents.add(events)
+                }
+            }
+        }catch (e: Exception){
+            Log.d("Error SelectPerPlantilla", e.toString())
+        }
+        return listEvents
+    }
+
+    fun DeleteEvent(idEvent: Int): Int{
+        val db = dataBase.writableDatabase
+
+        var rowsDeleted = 0
+
+        try {
+            rowsDeleted = db.delete("eventos", "id=?", arrayOf(idEvent.toString()))
+            Log.d("DeleteEvent", "Se elimino correctamente")
+        }catch(e: Exception){
+            Log.d("DeleteEvent", e.toString())
+        }finally {
+            db.close()
+        }
+        return rowsDeleted
+    }
+
+    fun CompleteEvent(idEvent: Int): Int{
+        val db = dataBase.writableDatabase
+
+        val values = ContentValues().apply {
+            put("status", 1)
+        }
+
+        var rowsAffected = 0
+
+        try {
+            rowsAffected = db.update("eventos", values, "id_evento = ?", arrayOf(idEvent.toString()))
+            Log.d("CompleteEvent", "Se completo el evento!")
+        }catch (e: Exception){
+            Log.d("Error CompleteEvent", e.toString())
+        }finally {
+            db.close()
+        }
+        return rowsAffected
+    }
+
+    fun InsertEstudiar(materia: String?, horaInicio: LocalDateTime?, horaFin: LocalDateTime?): Long {
+        val db = dataBase.writableDatabase
+
+        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        val horaFinFormat = horaFin?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+
+        val values = ContentValues().apply {
+            put("materia", materia)
+            put("hora_inicio", horaInicioFormat)
+            put("hora_fin", horaFinFormat)
+        }
+        var status: Long = 0
+
+        try {
+            status = db.insert("estudiar", null, values)
+            Log.d("InsertEstudiar", "Se insertó información de estudio correctamente")
+        } catch (e: Exception) {
+            Log.d("Error al insertar", e.toString())
+        } finally {
+            db.close()
+        }
+        return status
+    }
+
+    fun InsertaTarea(materia: String?, descripcion: String?): Long {
+        val db = dataBase.writableDatabase
+
+        val values = ContentValues().apply {
+            put("materia", materia)
+            put("descripcion", descripcion)
+        }
+        var status: Long = 0
+
+        try {
+            status = db.insert("tareas", null, values)
+            Log.d("InsertaTarea", "Se insertó información de tarea correctamente")
+        } catch (e: Exception) {
+            Log.d("Error al insertar", e.toString())
+        } finally {
+            db.close()
+        }
+        return status
+    }
+
+    fun InsertExamen(materia: String?, horaInicio: LocalDateTime?): Long {
+        val db = dataBase.writableDatabase
+
+        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+
+        val values = ContentValues().apply {
+            put("materia", materia)
+            put("hora_inicio", horaInicioFormat)
+        }
+        var status: Long = 0
+
+        try {
+            status = db.insert("examenes", null, values)
+            Log.d("InsertExamen", "Se insertó el de examen correctamente")
+        } catch (e: Exception) {
+            Log.d("Error al insertar", e.toString())
+        } finally {
+            db.close()
+        }
+        return status
+    }
+
+    fun InsertEjercicio(parteCuerpo: String?, horaInicio: LocalDateTime?, horaFin: LocalDateTime?): Long {
+        val db = dataBase.writableDatabase
+
+        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        val horaFinFormat = horaFin?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+
+        val values = ContentValues().apply {
+            put("parte_cuerpo", parteCuerpo)
+            put("hora_inicio", horaInicioFormat)
+            put("hora_fin", horaFinFormat)
+        }
+        var status: Long = 0
+
+        try {
+            status = db.insert("ejercicios", null, values)
+            Log.d("InsertEjercicio", "Se insertó el ejercicio correctamente")
+        } catch (e: Exception) {
+            Log.d("Error al insertar", e.toString())
+        } finally {
+            db.close()
+        }
+        return status
+    }
+
+    fun InsertEventoss(descripcion: String?, lugar: String?, horaInicio: LocalDateTime?): Long {
+        val db = dataBase.writableDatabase
+
+        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+        val values = ContentValues().apply {
+            put("descripcion", descripcion)
+            put("lugar", lugar)
+            put("hora_inicio", horaInicioFormat)
+        }
+        var status: Long = 0
+
+        try {
+            status = db.insert("eventos", null, values)
+            Log.d("InsertEventos", "Se insertó el evento correctamente")
+        } catch (e: Exception) {
+            Log.d("Error al insertar", e.toString())
+        } finally {
+            db.close()
+        }
+        return status
+    }
+
+    fun InsertComer(comida: String?, horaInicio: LocalDateTime?): Long {
+        val db = dataBase.writableDatabase
+
+        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+
+        val values = ContentValues().apply {
+            put("comida", comida)
+            put("hora_inicio", horaInicioFormat)
+        }
+        var status: Long = 0
+
+        try {
+            status = db.insert("comidas", null, values)
+            Log.d("InsertComer", "Se insertó la comida correctamente")
+        } catch (e: Exception) {
+            Log.d("Error al insertar", e.toString())
+        } finally {
+            db.close()
+        }
+        return status
+    }
+
+    fun InsertHobby(descripcion: String?, horaInicio: LocalDateTime?, lugar: String?): Long {
+        val db = dataBase.writableDatabase
+
+        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+        val values = ContentValues().apply {
+            put("descripcion", descripcion)
+            put("hora_inicio", horaInicioFormat)
+            put("lugar", lugar)
+        }
+        var status: Long = 0
+
+        try {
+            status = db.insert("hobbies", null, values)
+            Log.d("InsertHobby", "Se insertó el hobby correctamente")
+        } catch (e: Exception) {
+            Log.d("Error al insertar", e.toString())
+        } finally {
+            db.close()
+        }
+        return status
+    }
+
+    fun InsertBreak(horaInicio: LocalDateTime?, horaFin: LocalDateTime?): Long {
+        val db = dataBase.writableDatabase
+
+        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        val horaFinFormat = horaFin?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+
+        val values = ContentValues().apply {
+            put("hora_inicio", horaInicioFormat)
+            put("hora_fin", horaFinFormat)
+        }
+        var status: Long = 0
+
+        try {
+            status = db.insert("breaks", null, values)
+            Log.d("InsertBreak", "Se insertó informacion del descanso correctamente")
+        } catch (e: Exception) {
+            Log.d("Error al insertar", e.toString())
+        } finally {
+            db.close()
+        }
+        return status
+    }
 }
