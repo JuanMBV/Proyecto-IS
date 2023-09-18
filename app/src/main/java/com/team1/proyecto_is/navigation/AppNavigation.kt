@@ -25,11 +25,5 @@ fun AppNavigation(dataBase: DataBase){
         composable(route = AppScreens.ViewEvents.route){
             ViewEvents(navController,dataBase)
         }
-        /**
-         * composable(route = AppScreens.SplashScreen.route) {
-         *             Ejemplo(navController)
-         *         }
-         */
-
     }
 }
