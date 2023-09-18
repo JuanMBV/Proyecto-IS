@@ -9,6 +9,7 @@ import com.team1.proyecto_is.screen.SelectTemplate
 import com.team1.proyecto_is.screen.SplashScreen
 import com.team1.proyecto_is.screen.ViewEvents
 
+
 @Composable
 fun AppNavigation(dataBase: DataBase){
     val navController = rememberNavController()
@@ -24,5 +25,11 @@ fun AppNavigation(dataBase: DataBase){
         composable(route = AppScreens.ViewEvents.route){
             ViewEvents(navController,dataBase)
         }
+        /**
+         * composable(route = AppScreens.SplashScreen.route) {
+         *             Ejemplo(navController)
+         *         }
+         */
+
     }
 }

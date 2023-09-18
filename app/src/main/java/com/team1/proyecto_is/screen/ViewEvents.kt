@@ -55,8 +55,10 @@ import com.team1.proyecto_is.MainActivity
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -117,9 +119,12 @@ fun EventsList(dataBase: DataBase){
     //val popup = remember { mutableStateOf(false) }
     val eventosService = EventosService(dataBase)
 // Cambia la declaración de listEvents
-    val listEvents = remember { mutableStateListOf<Eventos>() }
+    var listEvents by remember { mutableStateOf<List<Eventos>>(emptyList()) }
 // Llena la lista con los elementos de eventosService.SelectAllEvents()
-    listEvents.addAll(eventosService.SelectAllEvents())
+
+    val coroutineScope = rememberCoroutineScope()
+
+    listEvents = listEvents + eventosService.SelectAllEvents()
     LazyColumn(
         state = rememberLazyListState(),
         verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -137,13 +142,23 @@ fun EventsList(dataBase: DataBase){
                             {*/
                                 //popUpComplete(ChooseText(item.getPlantilla().getIdPlantilla()))
                                 eventosService.CompleteEvent(item.getIdEventos())
-                                listEvents.remove(item)
+                                coroutineScope.launch {
+                                    delay(500)
+                                    listEvents = listEvents.toMutableList().also { list ->
+                                        list.remove(item)
+                                    }
+                                }
                             //}
                         }
                         DismissValue.DismissedToStart ->{
                             //para eliminar el evento (derecha a izquierda)
                             eventosService.DeleteEvent(item.getIdEventos())
-                            listEvents.remove(item)
+                            coroutineScope.launch {
+                                delay(500)
+                                listEvents = listEvents.toMutableList().also { list ->
+                                    list.remove(item)
+                                }
+                            }
                         }
                         DismissValue.Default->{
                             // cuando lo deja a medias
