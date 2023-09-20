@@ -34,6 +34,11 @@ import com.team1.proyecto_is.ui.theme.*
 import kotlin.math.PI
 import kotlin.math.atan
 import kotlin.math.atan2
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.res.painterResource
+import androidx.compose.material3.Icon
+import com.team1.proyecto_is.navigation.AppScreens
+
 
 @Composable
 fun SelectTemplate(navController: NavController){
@@ -41,29 +46,48 @@ fun SelectTemplate(navController: NavController){
 }
 
 @Composable
-fun ContentSelectTemplate(navController: NavController){
+fun ContentSelectTemplate(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(fondo)
-            .padding(5.dp)
-        ,
-        verticalArrangement = Arrangement.spacedBy(30.dp),
+            .padding(5.dp),
+        //verticalArrangement = Arrangement.spacedBy(30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Text(
-            "Selecciona tu\nplantilla",
-            fontSize = 35.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 30.dp),
-            fontFamily = nunito
-        )
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(onClick = {
+                navController.navigate(AppScreens.ViewEvents.route)
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.icon_close),
+                    contentDescription = ""
+                )
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                "Selecciona tu\nplantilla",
+                fontSize = 45.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 10.dp),
+                fontFamily = nunito,
+                lineHeight = 35.sp,
+            )
+        }
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
-        ){
+        ) {
             PieChart(
                 modifier = Modifier
                     .size(500.dp),
@@ -122,6 +146,7 @@ fun ContentSelectTemplate(navController: NavController){
     }
 }
 
+
 @Composable
 fun PieChart(
     modifier: Modifier = Modifier,
@@ -139,6 +164,7 @@ fun PieChart(
     var isCenterTapped by remember {
         mutableStateOf(false)
     }
+
 
     Box(
         modifier = modifier,
@@ -253,6 +279,7 @@ fun PieChart(
                     /*val textPaint = TextPaint()
                     textPaint.typeface = getFont(R.font.nunito)*/
 
+                    //aqui es donde se muestra lo que aparece cuando damos click
                     rotate(rotateAngle){
                         drawContext.canvas.nativeCanvas.apply {
                             drawText(
