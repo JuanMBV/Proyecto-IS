@@ -1,7 +1,6 @@
-
-
-
 package com.team1.proyecto_is.screen
+
+
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -55,14 +54,12 @@ import com.team1.proyecto_is.MainActivity
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+
 
 
 @Composable
-fun ViewEvents(navController: NavController, dataBase: DataBase){
+fun ViewEvents(navController: NavController, dataBase: DataBase) {
     ContentViewEvents(dataBase)
 }
 
@@ -119,12 +116,9 @@ fun EventsList(dataBase: DataBase){
     //val popup = remember { mutableStateOf(false) }
     val eventosService = EventosService(dataBase)
 // Cambia la declaración de listEvents
-    var listEvents by remember { mutableStateOf<List<Eventos>>(emptyList()) }
+    val listEvents = remember { mutableStateListOf<Eventos>() }
 // Llena la lista con los elementos de eventosService.SelectAllEvents()
-
-    val coroutineScope = rememberCoroutineScope()
-
-    listEvents = listEvents + eventosService.SelectAllEvents()
+    listEvents.addAll(eventosService.SelectAllEvents())
     LazyColumn(
         state = rememberLazyListState(),
         verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -140,25 +134,15 @@ fun EventsList(dataBase: DataBase){
                             /**popup.value = true
                             if (popup.value)
                             {*/
-                                //popUpComplete(ChooseText(item.getPlantilla().getIdPlantilla()))
-                                eventosService.CompleteEvent(item.getIdEventos())
-                                coroutineScope.launch {
-                                    delay(500)
-                                    listEvents = listEvents.toMutableList().also { list ->
-                                        list.remove(item)
-                                    }
-                                }
+                            //popUpComplete(ChooseText(item.getPlantilla().getIdPlantilla()))
+                            eventosService.CompleteEvent(item.getIdEventos())
+                            listEvents.remove(item)
                             //}
                         }
                         DismissValue.DismissedToStart ->{
                             //para eliminar el evento (derecha a izquierda)
                             eventosService.DeleteEvent(item.getIdEventos())
-                            coroutineScope.launch {
-                                delay(500)
-                                listEvents = listEvents.toMutableList().also { list ->
-                                    list.remove(item)
-                                }
-                            }
+                            listEvents.remove(item)
                         }
                         DismissValue.Default->{
                             // cuando lo deja a medias
@@ -173,9 +157,9 @@ fun EventsList(dataBase: DataBase){
                     val color =
                         when(state.dismissDirection){
                             DismissDirection.EndToStart -> Color.Transparent
-                        DismissDirection.StartToEnd -> Color.Transparent
-                        null -> Color.Transparent
-                    }
+                            DismissDirection.StartToEnd -> Color.Transparent
+                            null -> Color.Transparent
+                        }
                 },
                 dismissContent = {
                     ListItemRow(item)
@@ -205,7 +189,7 @@ fun ListItemRow(evento : Eventos){
                 )
             )
             .padding(horizontal = 20.dp, vertical = 15.dp)
-            //.clickable(onClick = (TODO()))
+        //.clickable(onClick = (TODO()))
 
     ){
         Text(
@@ -324,4 +308,3 @@ fun PreviewViewEvents() {
     val mainActivity = MainActivity()
     ContentViewEvents(mainActivity.InitializeDatabaseConnection(LocalContext.current))
 }
-
