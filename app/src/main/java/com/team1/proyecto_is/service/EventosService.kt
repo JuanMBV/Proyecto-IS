@@ -54,7 +54,7 @@ class EventosService(private val dataBase: DataBase) {
         try {
             db.rawQuery("SELECT * FROM eventos WHERE id_evento = $idEvento", null).use { cursor ->
                 cursor.moveToFirst()
-                evento.setIdEventos(cursor.getInt(0))
+                evento.setIdEvento(cursor.getInt(0))
                 val plantilla: Plantillas = PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
                 evento.setPlantilla(plantilla)
                 evento.setMateria(cursor.getStringOrNull(2))
@@ -82,7 +82,7 @@ class EventosService(private val dataBase: DataBase) {
             db.rawQuery("SELECT * FROM eventos WHERE status = 0 ORDER BY fecha_final DESC", null).use { cursor ->
                 while (cursor.moveToNext()) {
                     val events = Eventos()
-                    events.setIdEventos(cursor.getInt(0))
+                    events.setIdEvento(cursor.getInt(0))
                     val plantilla: Plantillas = PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
                     events.setPlantilla(plantilla)
                     events.setMateria(cursor.getStringOrNull(2))
@@ -134,7 +134,7 @@ class EventosService(private val dataBase: DataBase) {
             db.rawQuery("SELECT * FROM eventos WHERE status = 1", null).use { cursor ->
                 while (cursor.moveToNext()) {
                     val events = Eventos()
-                    events.setIdEventos(cursor.getInt(0))
+                    events.setIdEvento(cursor.getInt(0))
                     val plantilla: Plantillas = PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
                     events.setPlantilla(plantilla)
                     events.setMateria(cursor.getStringOrNull(2))
@@ -186,7 +186,7 @@ class EventosService(private val dataBase: DataBase) {
             db.rawQuery("SELECT * FROM eventos WHERE id_plantilla = $idPlantilla ORDER BY fecha_final DESC", null).use { cursor ->
                 while (cursor.moveToNext()) {
                     val events = Eventos()
-                    events.setIdEventos(cursor.getInt(0))
+                    events.setIdEvento(cursor.getInt(0))
                     val plantilla: Plantillas = PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
                     events.setPlantilla(plantilla)
                     events.setMateria(cursor.getStringOrNull(2))
@@ -229,13 +229,13 @@ class EventosService(private val dataBase: DataBase) {
         return listEvents
     }
 
-    fun DeleteEvent(idEvent: Int): Int{
+    fun DeleteEvent(idEvento: Int): Int{
         val db = dataBase.writableDatabase
 
         var rowsDeleted = 0
 
         try {
-            rowsDeleted = db.delete("eventos", "id=?", arrayOf(idEvent.toString()))
+            rowsDeleted = db.delete("eventos", "id_evento = ?", arrayOf(idEvento.toString()))
             Log.d("DeleteEvent", "Se elimino correctamente")
         }catch(e: Exception){
             Log.d("DeleteEvent", e.toString())
@@ -245,7 +245,7 @@ class EventosService(private val dataBase: DataBase) {
         return rowsDeleted
     }
 
-    fun CompleteEvent(idEvent: Int): Int{
+    fun CompleteEvent(idEvento: Int): Int{
         val db = dataBase.writableDatabase
 
         val values = ContentValues().apply {
@@ -255,7 +255,7 @@ class EventosService(private val dataBase: DataBase) {
         var rowsAffected = 0
 
         try {
-            rowsAffected = db.update("eventos", values, "id_evento = ?", arrayOf(idEvent.toString()))
+            rowsAffected = db.update("eventos", values, "id_evento = ?", arrayOf(idEvento.toString()))
             Log.d("CompleteEvent", "Se completo el evento!")
         }catch (e: Exception){
             Log.d("Error CompleteEvent", e.toString())

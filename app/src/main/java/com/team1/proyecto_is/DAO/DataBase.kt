@@ -18,7 +18,7 @@ class DataBase(context: Context?): SQLiteOpenHelper(context, "Ahora_Si.db", null
         // Crear la tabla Eventos
         db.execSQL(
             "CREATE TABLE eventos ("
-                    + "id_eventos INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "id_evento INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + "id_plantilla INTEGER,"
                     + "materia TEXT,"
                     + "parte_cuerpo TEXT,"
