@@ -1,43 +1,60 @@
 package com.team1.proyecto_is.screen
 
 import android.graphics.Paint
-import android.os.Bundle
-import android.text.TextPaint
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.team1.proyecto_is.R
-import com.team1.proyecto_is.screen.ContentSelectTemplate
-import com.team1.proyecto_is.ui.theme.*
-import kotlin.math.PI
-import kotlin.math.atan
-import kotlin.math.atan2
-import androidx.compose.material3.IconButton
-import androidx.compose.ui.res.painterResource
-import androidx.compose.material3.Icon
 import com.team1.proyecto_is.navigation.AppScreens
+import com.team1.proyecto_is.ui.theme.amarillo
+import com.team1.proyecto_is.ui.theme.azul
+import com.team1.proyecto_is.ui.theme.fondo
+import com.team1.proyecto_is.ui.theme.morado
+import com.team1.proyecto_is.ui.theme.naranja
+import com.team1.proyecto_is.ui.theme.nunito
+import com.team1.proyecto_is.ui.theme.rojo
+import com.team1.proyecto_is.ui.theme.rosa
+import com.team1.proyecto_is.ui.theme.turquesa
+import com.team1.proyecto_is.ui.theme.verde
+import kotlin.math.PI
+import kotlin.math.atan2
 
 
 @Composable
@@ -52,7 +69,6 @@ fun ContentSelectTemplate(navController: NavController) {
             .fillMaxSize()
             .background(fondo)
             .padding(5.dp),
-        //verticalArrangement = Arrangement.spacedBy(30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -141,7 +157,8 @@ fun ContentSelectTemplate(navController: NavController) {
                         description = "Comer"
                     ),
                 ),
-            )
+                navController = navController
+                )
         }
     }
 }
@@ -153,6 +170,7 @@ fun PieChart(
     radius:Float = 380f,
     innerRadius:Float = 100f,
     input:List<PieChartInput>,
+    navController: NavController
 ) {
     var circleCenter by remember {
         mutableStateOf(Offset.Zero)
@@ -164,6 +182,12 @@ fun PieChart(
     var isCenterTapped by remember {
         mutableStateOf(false)
     }
+    var showPopUp by remember {
+        mutableStateOf(false)
+    }
+    var plantilla : String = ""
+
+    // aqui se hace el if que dependiendo del valor del showPopUp, muestra el popUp
 
 
     Box(
@@ -173,42 +197,42 @@ fun PieChart(
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
-                .pointerInput(true){
+                .pointerInput(true) {
                     detectTapGestures(
-                        onTap = { offset->
+                        onTap = { offset ->
                             val tapAngleInDegrees = (-atan2(
                                 x = circleCenter.y - offset.y,
                                 y = circleCenter.x - offset.x
                             ) * (180f / PI).toFloat() - 90f).mod(360f)
-                            val centerClicked = if(tapAngleInDegrees<90) {
-                                offset.x<circleCenter.x+innerRadius && offset.y<circleCenter.y+innerRadius
-                            }else if(tapAngleInDegrees<180){
-                                offset.x>circleCenter.x-innerRadius && offset.y<circleCenter.y+innerRadius
-                            }else if(tapAngleInDegrees<270){
-                                offset.x>circleCenter.x-innerRadius && offset.y>circleCenter.y-innerRadius
-                            }else{
-                                offset.x<circleCenter.x+innerRadius && offset.y>circleCenter.y-innerRadius
+                            val centerClicked = if (tapAngleInDegrees < 90) {
+                                offset.x < circleCenter.x + innerRadius && offset.y < circleCenter.y + innerRadius
+                            } else if (tapAngleInDegrees < 180) {
+                                offset.x > circleCenter.x - innerRadius && offset.y < circleCenter.y + innerRadius
+                            } else if (tapAngleInDegrees < 270) {
+                                offset.x > circleCenter.x - innerRadius && offset.y > circleCenter.y - innerRadius
+                            } else {
+                                offset.x < circleCenter.x + innerRadius && offset.y > circleCenter.y - innerRadius
                             }
 
-                            if(centerClicked){
+                            if (centerClicked) {
                                 inputList = inputList.map {
                                     it.copy(isTapped = !isCenterTapped)
                                 }
                                 isCenterTapped = !isCenterTapped
-                            }else{
-                                val anglePerValue = 360f/input.sumOf {
+                            } else {
+                                val anglePerValue = 360f / input.sumOf {
                                     it.value
                                 }
                                 var currAngle = 0f
                                 inputList.forEach { pieChartInput ->
 
                                     currAngle += pieChartInput.value * anglePerValue
-                                    if(tapAngleInDegrees<currAngle){
+                                    if (tapAngleInDegrees < currAngle) {
                                         val description = pieChartInput.description
                                         inputList = inputList.map {
-                                            if(description == it.description){
+                                            if (description == it.description) {
                                                 it.copy(isTapped = !it.isTapped)
-                                            }else{
+                                            } else {
                                                 it.copy(isTapped = false)
                                             }
                                         }
@@ -258,6 +282,11 @@ fun PieChart(
                 }
 
                 if(pieChartInput.isTapped){
+                    // le damos el valor a la variable que se pasa al AlertDialog
+                    plantilla = pieChartInput.description
+                    // cambiamos el valor para que se muestre el popUp
+                    showPopUp = true
+
                     val tabRotation = currentStartAngle - angleToDraw - 90f
                     rotate(tabRotation){
                         drawRoundRect(
@@ -276,8 +305,6 @@ fun PieChart(
                         )
                     }
 
-                    /*val textPaint = TextPaint()
-                    textPaint.typeface = getFont(R.font.nunito)*/
 
                     //aqui es donde se muestra lo que aparece cuando damos click
                     rotate(rotateAngle){
@@ -312,7 +339,34 @@ fun PieChart(
 
 
         }
+        if(showPopUp){
+            popUp(plantilla = plantilla, navController = navController)
+        }
     }
+}
+
+@Composable
+fun popUp(plantilla : String, navController: NavController){
+    AlertDialog(onDismissRequest = { /*TODO*/ },
+        confirmButton = {
+            TextButton(onClick = { /* MANDAR A LA PAGINA DE CREAR
+                aqui será un if, dependiendo del nombre de la plantilla te
+                mandara a su respectiva de creación*/
+                navController.navigate(AppScreens.Add_Estudiar.route)
+            }) {
+                Text(text = "Crear")
+            }
+        },
+        dismissButton = { /** MANDAR A LA PAGINA DE VER EVENTOS POR PLANTILLA
+        aqui será un if, dependiendo del nombre de la plantilla te
+        mandara a su respectiva de ver eventos totales */
+            TextButton(onClick = { /*TODO*/ }) {
+                Text( text = "Ver")
+            }
+        },
+        text = {
+            Text(text = "¿Qué deseas hacer?")
+        })
 }
 
 data class PieChartInput(

@@ -22,6 +22,10 @@ val nunito = FontFamily(
         Font(R.font.nunito, weight = FontWeight.Normal)
         )
 
+val nunito_bold = FontFamily(
+    Font(R.font.nunito_bold, weight = FontWeight.Normal)
+)
+
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,

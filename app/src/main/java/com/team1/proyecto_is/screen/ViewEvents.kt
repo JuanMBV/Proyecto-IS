@@ -2,6 +2,7 @@ package com.team1.proyecto_is.screen
 
 
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -106,8 +107,12 @@ fun EventsList(dataBase: DataBase){
     val eventosService = EventosService(dataBase)
 // Cambia la declaración de listEvents
     val listEvents = remember { mutableStateListOf<Eventos>() }
+    listEvents.clear() // Limpia la lista antes de agregar nuevos eventos
 // Llena la lista con los elementos de eventosService.SelectAllEvents()
     listEvents.addAll(eventosService.SelectAllEvents())
+    val contexto = LocalContext.current
+    print(listEvents)
+
     LazyColumn(
         state = rememberLazyListState(),
         verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -122,12 +127,14 @@ fun EventsList(dataBase: DataBase){
                             // para completar el evento (izquierda a derecha)
                             eventosService.CompleteEvent(item.getIdEventos())
                             listEvents.remove(item)
+                            Toast.makeText(contexto, "Completado", Toast.LENGTH_SHORT).show()
                             //}
                         }
                         DismissValue.DismissedToStart ->{
                             //para eliminar el evento (derecha a izquierda)
                             eventosService.DeleteEvent(item.getIdEventos())
                             listEvents.remove(item)
+                            Toast.makeText(contexto, "Eliminado", Toast.LENGTH_SHORT).show()
                         }
                         DismissValue.Default->{
                             // cuando lo deja a medias
@@ -178,7 +185,7 @@ fun ListItemRow(evento : Eventos){
 
     ){
         Text(
-            text = ChooseText(evento).toString(),
+            text = ChooseText(evento).toString() + " ," + evento.getIdEventos().toString(),
             fontSize = 20.sp,
             fontFamily = nunito,
             color = Color.White

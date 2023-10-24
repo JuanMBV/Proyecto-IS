@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.team1.proyecto_is.DAO.DataBase
+import com.team1.proyecto_is.screen.Add_Estudiar
 import com.team1.proyecto_is.screen.SelectTemplate
 import com.team1.proyecto_is.screen.SplashScreen
 import com.team1.proyecto_is.screen.ViewEvents
@@ -24,6 +25,9 @@ fun AppNavigation(dataBase: DataBase){
         }
         composable(route = AppScreens.ViewEvents.route){
             ViewEvents(navController,dataBase)
+        }
+        composable(route = AppScreens.Add_Estudiar.route){
+            Add_Estudiar(navController)
         }
     }
 }
