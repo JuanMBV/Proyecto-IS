@@ -352,7 +352,11 @@ fun popUp(plantilla : String, navController: NavController){
             TextButton(onClick = { /* MANDAR A LA PAGINA DE CREAR
                 aqui será un if, dependiendo del nombre de la plantilla te
                 mandara a su respectiva de creación*/
-                navController.navigate(AppScreens.Add_Estudiar.route)
+                when (plantilla) {
+                    "Estudiar" -> navController.navigate(AppScreens.Add_Estudiar.route)
+                    else -> navController.navigate(AppScreens.Add_Estudiar.route)
+                }
+
             }) {
                 Text(text = "Crear")
             }
