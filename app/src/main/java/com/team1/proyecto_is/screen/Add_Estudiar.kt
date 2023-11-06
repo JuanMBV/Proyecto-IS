@@ -117,6 +117,7 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
 
         // inicio de seccion de campo de texto
         var entrada by remember { mutableStateOf("") }
+        val mContext = LocalContext.current
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -126,12 +127,24 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
                 textAlign = TextAlign.Start,
                 fontFamily = nunito_bold,
             )
+            /**
+             * if(!username.matches("[a-zA-Z0-9]+")){
+             *     Toast.makeText(this, "Username must be alphanumeric", Toast.LENGTH_SHORT).show();
+             *     return;
+             * }
+             */
+
             // campo de texto
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = entrada,
                 onValueChange = { valor ->
-                    entrada = valor
+                    if(valor.matches("[a-zA-Z0-9]+".toRegex())) {
+                        entrada = valor
+                    } else{
+                        Toast.makeText(mContext, "Dato no alfanumerico", Toast.LENGTH_SHORT).show();
+                    }
+
                 },
                 //aqui se muestra el que texto que indica el cuadro
                 label = { Text("") }
@@ -147,7 +160,6 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
             // inicio de seccion de campo de horas de inicio / fin
 
             // Fetching local context
-            val mContext = LocalContext.current
 
             // Declaring and initializing a calendar
             val mCalendar = Calendar.getInstance()
