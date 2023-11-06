@@ -8,6 +8,7 @@ import com.team1.proyecto_is.model.Eventos
 import com.team1.proyecto_is.model.Plantillas
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 class EventosService(private val dataBase: DataBase) {
@@ -268,61 +269,22 @@ class EventosService(private val dataBase: DataBase) {
     fun InsertEstudiar(materia: String?, horaInicio: LocalDateTime?, horaFin: LocalDateTime?): Long {
         val db = dataBase.writableDatabase
 
-        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-        val horaFinFormat = horaFin?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        val horaFinFormat = horaFin?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        val now = LocalDateTime.of(LocalDate.now(), LocalTime.now()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
         val values = ContentValues().apply {
+            put("id_plantilla", 1)
             put("materia", materia)
-            put("hora_inicio", horaInicioFormat)
-            put("hora_fin", horaFinFormat)
+            put("fecha_registro", now)
+            put("fecha_incial", horaInicioFormat)
+            put("fecha_final", horaFinFormat)
         }
         var status: Long = 0
 
         try {
-            status = db.insert("estudiar", null, values)
+            status = db.insert("eventos", null, values)
             Log.d("InsertEstudiar", "Se insertó información de estudio correctamente")
-        } catch (e: Exception) {
-            Log.d("Error al insertar", e.toString())
-        } finally {
-            db.close()
-        }
-        return status
-    }
-
-    fun InsertaTarea(materia: String?, descripcion: String?): Long {
-        val db = dataBase.writableDatabase
-
-        val values = ContentValues().apply {
-            put("materia", materia)
-            put("descripcion", descripcion)
-        }
-        var status: Long = 0
-
-        try {
-            status = db.insert("tareas", null, values)
-            Log.d("InsertaTarea", "Se insertó información de tarea correctamente")
-        } catch (e: Exception) {
-            Log.d("Error al insertar", e.toString())
-        } finally {
-            db.close()
-        }
-        return status
-    }
-
-    fun InsertExamen(materia: String?, horaInicio: LocalDateTime?): Long {
-        val db = dataBase.writableDatabase
-
-        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-
-        val values = ContentValues().apply {
-            put("materia", materia)
-            put("hora_inicio", horaInicioFormat)
-        }
-        var status: Long = 0
-
-        try {
-            status = db.insert("examenes", null, values)
-            Log.d("InsertExamen", "Se insertó el de examen correctamente")
         } catch (e: Exception) {
             Log.d("Error al insertar", e.toString())
         } finally {
@@ -334,42 +296,22 @@ class EventosService(private val dataBase: DataBase) {
     fun InsertEjercicio(parteCuerpo: String?, horaInicio: LocalDateTime?, horaFin: LocalDateTime?): Long {
         val db = dataBase.writableDatabase
 
-        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-        val horaFinFormat = horaFin?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-
-        val values = ContentValues().apply {
-            put("parte_cuerpo", parteCuerpo)
-            put("hora_inicio", horaInicioFormat)
-            put("hora_fin", horaFinFormat)
-        }
-        var status: Long = 0
-
-        try {
-            status = db.insert("ejercicios", null, values)
-            Log.d("InsertEjercicio", "Se insertó el ejercicio correctamente")
-        } catch (e: Exception) {
-            Log.d("Error al insertar", e.toString())
-        } finally {
-            db.close()
-        }
-        return status
-    }
-
-    fun InsertEventoss(descripcion: String?, lugar: String?, horaInicio: LocalDateTime?): Long {
-        val db = dataBase.writableDatabase
-
         val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        val horaFinFormat = horaFin?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        val now = LocalDateTime.of(LocalDate.now(), LocalTime.now()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
         val values = ContentValues().apply {
-            put("descripcion", descripcion)
-            put("lugar", lugar)
-            put("hora_inicio", horaInicioFormat)
+            put("id_plantilla", 2)
+            put("parte_cuerpo", parteCuerpo)
+            put("fecha_registro", now)
+            put("fecha_incial", horaInicioFormat)
+            put("fecha_final", horaFinFormat)
         }
         var status: Long = 0
 
         try {
             status = db.insert("eventos", null, values)
-            Log.d("InsertEventos", "Se insertó el evento correctamente")
+            Log.d("InsertEjercicio", "Se insertó el evento de ejercicio correctamente")
         } catch (e: Exception) {
             Log.d("Error al insertar", e.toString())
         } finally {
@@ -378,71 +320,4 @@ class EventosService(private val dataBase: DataBase) {
         return status
     }
 
-    fun InsertComer(comida: String?, horaInicio: LocalDateTime?): Long {
-        val db = dataBase.writableDatabase
-
-        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-
-        val values = ContentValues().apply {
-            put("comida", comida)
-            put("hora_inicio", horaInicioFormat)
-        }
-        var status: Long = 0
-
-        try {
-            status = db.insert("comidas", null, values)
-            Log.d("InsertComer", "Se insertó la comida correctamente")
-        } catch (e: Exception) {
-            Log.d("Error al insertar", e.toString())
-        } finally {
-            db.close()
-        }
-        return status
-    }
-
-    fun InsertHobby(descripcion: String?, horaInicio: LocalDateTime?, lugar: String?): Long {
-        val db = dataBase.writableDatabase
-
-        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-
-        val values = ContentValues().apply {
-            put("descripcion", descripcion)
-            put("hora_inicio", horaInicioFormat)
-            put("lugar", lugar)
-        }
-        var status: Long = 0
-
-        try {
-            status = db.insert("hobbies", null, values)
-            Log.d("InsertHobby", "Se insertó el hobby correctamente")
-        } catch (e: Exception) {
-            Log.d("Error al insertar", e.toString())
-        } finally {
-            db.close()
-        }
-        return status
-    }
-
-    fun InsertBreak(horaInicio: LocalDateTime?, horaFin: LocalDateTime?): Long {
-        val db = dataBase.writableDatabase
-
-        val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-        val horaFinFormat = horaFin?.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-
-        val values = ContentValues().apply {
-            put("hora_inicio", horaInicioFormat)
-            put("hora_fin", horaFinFormat)
-        }
-        var status: Long = 0
-
-        try {
-            status = db.insert("breaks", null, values)
-            Log.d("InsertBreak", "Se insertó informacion del descanso correctamente")
-        } catch (e: Exception) {
-            Log.d("Error al insertar", e.toString())
-        } finally {
-            db.close()
-        }
-        return status
-    }
 }
