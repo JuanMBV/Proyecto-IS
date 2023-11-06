@@ -27,7 +27,7 @@ fun AppNavigation(dataBase: DataBase){
             ViewEvents(navController,dataBase)
         }
         composable(route = AppScreens.Add_Estudiar.route){
-            Add_Estudiar(navController)
+            Add_Estudiar(navController, dataBase)
         }
     }
 }

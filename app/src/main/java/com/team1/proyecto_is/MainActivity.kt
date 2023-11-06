@@ -2,10 +2,6 @@ package com.team1.proyecto_is
 
 import android.content.Context
 import android.os.Bundle
-import android.provider.ContactsContract.Data
-import android.telephony.mbms.MbmsErrors.InitializationErrors
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,13 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.team1.proyecto_is.DAO.DataBase
-import com.team1.proyecto_is.model.Eventos
 import com.team1.proyecto_is.navigation.AppNavigation
 import com.team1.proyecto_is.service.EventosService
 import com.team1.proyecto_is.service.PlantillaService
 import com.team1.proyecto_is.ui.theme.ProyectoISTheme
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
                     InsertPlantillas(db)
                     PrintPlantillas(db)
-                    InsertEventos(db)
+                    //InsertEventos(db)
                     PrintEventos(db)
                     AppNavigation(db)
                 }
@@ -62,12 +55,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
     fun InsertEventos(db: DataBase) {
         EventosService(db).InsertEvento(1, "Matematicas", null, null, null, null, 0, LocalDateTime.now(), LocalDateTime.of(2023, 9, 7, 18, 30), LocalDateTime.of(2023, 9, 7, 19, 0), "")
         EventosService(db).InsertEvento(2, null, "Pierna", null, null, null, 0, LocalDateTime.now(), LocalDateTime.of(2023, 9, 7, 18, 30), LocalDateTime.of(2023, 9, 7, 19, 0), "")
         EventosService(db).InsertEvento(8, "Redes", null, null, null, null,0, LocalDateTime.now(), LocalDateTime.of(2023, 9, 7, 18, 30), null, "")
     }
-
+*/
     fun PrintPlantillas(db: DataBase){
         var lista = PlantillaService(db).SelectNamePlantilla()
 

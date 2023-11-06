@@ -185,7 +185,7 @@ fun ListItemRow(evento : Eventos){
 
     ){
         Text(
-            text = ChooseText(evento).toString() + " ," + evento.getIdEventos().toString(),
+            text = ChooseText(evento).toString(),
             fontSize = 20.sp,
             fontFamily = nunito,
             color = Color.White
