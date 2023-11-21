@@ -55,17 +55,20 @@ import java.util.Date
 
 /**
  * Cosas que faltan de agregar
- * Pop Up que pregunte si desea salir sin guardar (no viene en plantillas)
- * Que los metodos reciban parametros para usarlos en el guardado de datos
- * que el boton de guardado guarde
- * la validacion de los datos para fechas pasadas
- * que muesre un mensaje si se trata de ingresar una fecha pasada.
+ * chequeo de las fechas (que no permita fechas anterioores)
+ * chequeo de las horas (no permitir misma hora en inicio y fin) (FALTA PROBAR)
+ * el textInput deja un valor en la casilla (no queda totalmente vacia) (FALTA PROBAR)
+ * checar el regex, que permita espacios, comas, puntos, dos puntos, acentos (FALTA PROBAR)
+ * chwcar el + al final del regex, cambiarlo por * (0 o mas) (FALTA PROBAR)
+ * cambiar el color de la imagen de boton de completdos
+ * eliminar boton de hora de fin y dejar solo HoraInicio (hora) y dia.
  */
 
 @Composable
 fun Add_Estudiar(navController: NavController, dataBase: DataBase){
     ContentAdd_Estudiar(navController, dataBase)
 }
+
 
 @Composable
 fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
@@ -127,19 +130,14 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
                 textAlign = TextAlign.Start,
                 fontFamily = nunito_bold,
             )
-            /**
-             * if(!username.matches("[a-zA-Z0-9]+")){
-             *     Toast.makeText(this, "Username must be alphanumeric", Toast.LENGTH_SHORT).show();
-             *     return;
-             * }
-             */
+
 
             // campo de texto
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = entrada,
                 onValueChange = { valor ->
-                    if(valor.matches("[a-zA-Z0-9]+".toRegex())) {
+                    if(valor.matches("[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ!¡¿?\\-: ]*".toRegex())) {
                         entrada = valor
                     } else{
                         Toast.makeText(mContext, "Dato no alfanumerico", Toast.LENGTH_SHORT).show();
@@ -372,13 +370,7 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
 
 @Composable
 fun Guardado(navController: NavController, dataBase: DataBase, text : String, inicio : String, fin : String, date : String){
-    /**
-     * variables que se usan para los datos
-     * var text by remember { mutableStateOf("") }
-     * val inicio = remember { mutableStateOf("") }
-     * val fin = remember { mutableStateOf("") }
-     * val mDate = remember { mutableStateOf("") }
-     */
+
     // boton de guardado
     val eventosService = EventosService(dataBase)
     val contexto = LocalContext.current
@@ -398,11 +390,11 @@ fun Guardado(navController: NavController, dataBase: DataBase, text : String, in
                     Toast.makeText(contexto, "Faltan datos", Toast.LENGTH_SHORT).show()
                 } else {
                     try {
-                        Log.d("NOTA","Ya entro al try")
                         val formatInicio = LocalDateTime.parse(gInicio, formatter)
-                        Log.d("NOTA","Ya le dio format al inicio ESTATICO")
                         val formatFin = LocalDateTime.parse(gFin, formatter)
-                        Log.d("NOTA","Ya le dio format al fin")
+                        if(formatFin.isBefore(formatInicio)){
+                            Toast.makeText(contexto, "Verifique su hora de fin", Toast.LENGTH_SHORT).show()
+                        }
                         Log.d("Correcto", "Se convirtio correctamente el texto")
                         eventosService.InsertEvento(
                             1,
@@ -444,33 +436,9 @@ fun Guardado(navController: NavController, dataBase: DataBase, text : String, in
     }
 }
 
-//Invalid date-time string: 8/11/2023 3:21 / 8/11/2023 3:22
 
 /**
- * Estaba haciendo el pop up para cuando intenta salir sin guardar
- * pero vi que no lo puse en las plantillas de especificacion XD
- * entonces me lo salte
 
-fun exitWithoutSaving(navController: NavController){
-AlertDialog(onDismissRequest = { /*TODO*/ },
-confirmButton = {
-TextButton(onClick = { /* si se da click, salir de la pagina*/
-navController.navigate(AppScreens.ViewEvents.route)
-}) {
-Text(text = "Salir")
-}
-},
-dismissButton = { /** Si se indica cancelar operación */
-TextButton(onClick = { /**/ }) {
-Text( text = "Cancelar")
-}
-},
-text = {
-Text(text = "¿Qué deseas hacer?")
-})
-}*/
-
-/*
 
 @Preview(showSystemUi = true)
 @Composable

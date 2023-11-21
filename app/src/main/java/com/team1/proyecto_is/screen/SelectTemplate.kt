@@ -1,6 +1,7 @@
 package com.team1.proyecto_is.screen
 
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -56,11 +57,18 @@ import com.team1.proyecto_is.ui.theme.verde
 import kotlin.math.PI
 import kotlin.math.atan2
 
-
+/**
+ * cosas a checar
+ * el popup no permite cancelar (on dismissrequest) (FALTA PROBAR)
+ */
 @Composable
 fun SelectTemplate(navController: NavController){
     ContentSelectTemplate(navController)
 }
+//definimos una variable global (en esta clase) para cerrar / abrir el popUp
+var showPopUp by mutableStateOf(false)
+var clickOutside by mutableStateOf(false)
+
 
 @Composable
 fun ContentSelectTemplate(navController: NavController) {
@@ -175,14 +183,10 @@ fun PieChart(
     var circleCenter by remember {
         mutableStateOf(Offset.Zero)
     }
-
     var inputList by remember {
         mutableStateOf(input)
     }
     var isCenterTapped by remember {
-        mutableStateOf(false)
-    }
-    var showPopUp by remember {
         mutableStateOf(false)
     }
     var plantilla : String = ""
@@ -255,76 +259,77 @@ fun PieChart(
             var currentStartAngle = 0f
 
             inputList.forEach { pieChartInput ->
-                val scale = if(pieChartInput.isTapped) 1.1f else 1.0f
+                val scale = if (pieChartInput.isTapped) 1.1f else 1.0f
                 val angleToDraw = pieChartInput.value * anglePerValue
-                scale(scale){
+                scale(scale) {
                     drawArc(
                         color = pieChartInput.color,
                         startAngle = currentStartAngle,
                         sweepAngle = angleToDraw,
                         useCenter = true,
                         size = Size(
-                            width = radius*2f,
-                            height = radius*2f
+                            width = radius * 2f,
+                            height = radius * 2f
                         ),
                         topLeft = Offset(
-                            (width-radius*2f)/2f,
-                            (height - radius*2f)/2f
+                            (width - radius * 2f) / 2f,
+                            (height - radius * 2f) / 2f
                         )
                     )
                     currentStartAngle += angleToDraw
                 }
-                var rotateAngle = currentStartAngle-angleToDraw/2f-90f
+                var rotateAngle = currentStartAngle - angleToDraw / 2f - 90f
                 var factor = 1f
-                if(rotateAngle>90f){
-                    rotateAngle = (rotateAngle+180).mod(360f)
+                if (rotateAngle > 90f) {
+                    rotateAngle = (rotateAngle + 180).mod(360f)
                     factor = -0.92f
                 }
 
-                if(pieChartInput.isTapped){
+                if (pieChartInput.isTapped) {
                     // le damos el valor a la variable que se pasa al AlertDialog
                     plantilla = pieChartInput.description
                     // cambiamos el valor para que se muestre el popUp
                     showPopUp = true
-
+                    clickOutside = false
                     val tabRotation = currentStartAngle - angleToDraw - 90f
-                    rotate(tabRotation){
+                    rotate(tabRotation) {
                         drawRoundRect(
                             topLeft = circleCenter,
-                            size = Size(12f,radius*1.2f),
+                            size = Size(12f, radius * 1.2f),
                             color = fondo,
-                            cornerRadius = CornerRadius(15f,15f)
+                            cornerRadius = CornerRadius(15f, 15f)
                         )
                     }
-                    rotate(tabRotation+angleToDraw){
+                    rotate(tabRotation + angleToDraw) {
                         drawRoundRect(
                             topLeft = circleCenter,
-                            size = Size(12f,radius*1.2f),
+                            size = Size(12f, radius * 1.2f),
                             color = fondo,
-                            cornerRadius = CornerRadius(15f,15f)
+                            cornerRadius = CornerRadius(15f, 15f)
                         )
                     }
 
 
                     //aqui es donde se muestra lo que aparece cuando damos click
-                    rotate(rotateAngle){
+                    rotate(rotateAngle) {
                         drawContext.canvas.nativeCanvas.apply {
                             drawText(
                                 "${pieChartInput.description}",
                                 circleCenter.x,
-                                circleCenter.y + radius*1.3f*factor,
+                                circleCenter.y + radius * 1.3f * factor,
                                 Paint().apply {
                                     textSize = 22.sp.toPx()
                                     textAlign = Paint.Align.CENTER
                                     color = Color.Black.toArgb()
                                     isFakeBoldText = true
 //                                    setTypeface(textPaint)
-                                }
-                            )
-                        }
-                    }
-                }
-            }
+                                } // fin del apply
+                            ) // fin del drawText
+                        } // fin del drawContext
+                    } // fin del rotate
+                } // fin del if pieChartInput.isTapped
+
+            } // fin del inputList for each
 
             if(inputList.first().isTapped){
                 rotate(-90f){
@@ -340,38 +345,55 @@ fun PieChart(
 
         }
         if(showPopUp){
-            popUp(plantilla = plantilla, navController = navController)
+            popUp(plantilla = plantilla,navController = navController)
+            clickOutside = false
         }
+        /**
+        if(clickOutside){
+            inputList = inputList.map {
+                it.copy(isTapped = false)
+            }
+        }*/
+
     }
 }
 
 @Composable
 fun popUp(plantilla : String, navController: NavController){
-    AlertDialog(onDismissRequest = { /*TODO*/ },
-        confirmButton = {
-            TextButton(onClick = { /* MANDAR A LA PAGINA DE CREAR
+    if(showPopUp) {
+        AlertDialog(
+            onDismissRequest = {  // cuando se da click fuera del popUp
+                showPopUp = false
+                clickOutside = true
+                Log.d("Correcto", "Se cierra el popUp")
+                               },
+            confirmButton = {
+                TextButton(onClick = { /* MANDAR A LA PAGINA DE CREAR
                 aqui será un if, dependiendo del nombre de la plantilla te
                 mandara a su respectiva de creación*/
-                when (plantilla) {
-                    "Estudiar" -> navController.navigate(AppScreens.Add_Estudiar.route)
-                    else -> navController.navigate(AppScreens.Add_Estudiar.route)
-                }
+                    when (plantilla) {
+                        "Estudiar" -> navController.navigate(AppScreens.Add_Estudiar.route)
+                        else -> navController.navigate(AppScreens.Add_Estudiar.route)
+                    }
 
-            }) {
-                Text(text = "Crear")
-            }
-        },
-        dismissButton = { /** MANDAR A LA PAGINA DE VER EVENTOS POR PLANTILLA
-        aqui será un if, dependiendo del nombre de la plantilla te
-        mandara a su respectiva de ver eventos totales */
-            TextButton(onClick = { /*TODO*/ }) {
-                Text( text = "Ver")
-            }
-        },
-        text = {
-            Text(text = "¿Qué deseas hacer?")
-        })
+                }) {
+                    Text(text = "Crear")
+                }
+            },
+            dismissButton = {
+                /** MANDAR A LA PAGINA DE VER EVENTOS POR PLANTILLA
+                aqui será un if, dependiendo del nombre de la plantilla te
+                mandara a su respectiva de ver eventos totales */
+                TextButton(onClick = { /*TODO*/ }) {
+                    Text(text = "Ver")
+                }
+            },
+            text = {
+                Text(text = "¿Qué deseas hacer?")
+            })
+    }
 }
+
 
 data class PieChartInput(
     val color:Color,

@@ -77,7 +77,7 @@ fun ContentViewEvents(dataBase: DataBase) {
             ){
                 IconButton(onClick = { /* nos va a mandar a pagina de completados*/ }) {
                     Icon(
-                        painter = painterResource(R.drawable.icon_check),
+                        painter = painterResource(R.drawable.icon_check_green),
                         contentDescription = "",
                     )
                 }
@@ -248,13 +248,17 @@ fun ChooseText(evento: Eventos) : String? {
         2 -> {
             return evento.getParteCuerpo()
         }
-        //3 Hobbies, 6 Eventos, 7 Break - Amarillo
-        3,6,7 -> {
+        //3 Hobbies, 6 Eventos
+        3,6 -> {
             return evento.getDescripcion()
         }
         //4 Comer - Verde
         4 -> {
             return evento.getComida()
+        }
+        // 7 Break - Amarillo
+        7 -> {
+            return "Break"
         }
         else -> {
             return ""
