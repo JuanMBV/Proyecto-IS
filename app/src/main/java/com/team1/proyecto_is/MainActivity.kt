@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.model.Eventos
 import com.team1.proyecto_is.navigation.AppNavigation
+import com.team1.proyecto_is.screen.EventsList
 import com.team1.proyecto_is.service.EventosService
 import com.team1.proyecto_is.service.PlantillaService
 import com.team1.proyecto_is.ui.theme.ProyectoISTheme
@@ -64,9 +65,15 @@ fun InsertPlantillas(db: DataBase){
 }
 
 fun InsertEventos(db: DataBase) {
-    EventosService(db).InsertEvento(1, "Matematicas", null, null, null, null, 0, LocalDateTime.now(), LocalDateTime.of(2023, 9, 7, 18, 30), LocalDateTime.of(2023, 9, 7, 19, 0), "")
-    EventosService(db).InsertEvento(2, null, "Pierna", null, null, null, 0, LocalDateTime.now(), LocalDateTime.of(2023, 9, 7, 18, 30), LocalDateTime.of(2023, 9, 7, 19, 0), "")
-    EventosService(db).InsertEvento(8, "Redes", null, null, null, null,0, LocalDateTime.now(), LocalDateTime.of(2023, 9, 7, 18, 30), null, "")
+
+    EventosService(db).InsertEstudiar("Ingenieria de software", LocalDateTime.of(2023, 9, 21, 18, 30), LocalDateTime.of(2023, 9, 21, 20, 30))
+    EventosService(db).InsertEjercicio("Pierna", LocalDateTime.of(2023, 9, 22, 18, 30), LocalDateTime.of(2023, 9, 22, 18, 30))
+    EventosService(db).InsertHobbie("Jugar", LocalDateTime.of(2023, 9, 23, 18, 30), "Saltillo")
+    EventosService(db).InsertComer("Papas", LocalDateTime.of(2023, 9, 24, 18, 30), LocalDateTime.of(2023, 9, 24, 18, 30))
+    EventosService(db).InsertTarea("Tarea redes", "Enrutamiento", LocalDateTime.of(2023, 9, 25, 18, 30))
+    EventosService(db).InsertBreak("Descansito",LocalDateTime.of(2023, 9, 26, 18, 30), LocalDateTime.of(2023, 9, 26, 18, 31))
+    EventosService(db).InsertEventos("Baby Shower", "Salon de baby shower", LocalDateTime.of(2023, 9, 27, 18, 30))
+    EventosService(db).InsertExamen("Automatas", LocalDateTime.of(2023, 9, 28, 18, 30))
 }
 
 fun PrintPlantillas(db: DataBase){
