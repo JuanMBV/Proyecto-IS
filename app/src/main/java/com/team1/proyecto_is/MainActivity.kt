@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.navigation.AppNavigation
+import com.team1.proyecto_is.screen.EventsList
 import com.team1.proyecto_is.service.EventosService
 import com.team1.proyecto_is.service.PlantillaService
 import com.team1.proyecto_is.ui.theme.ProyectoISTheme

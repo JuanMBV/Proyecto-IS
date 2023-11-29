@@ -2,7 +2,7 @@ package com.team1.proyecto_is.model
 
 import java.time.LocalDateTime
 
-class Eventos(private var idEventos: Int,
+class Eventos(private var idEvento: Int,
               private var plantilla: Plantillas?,
               private var materia: String?,
               private var parteCuerpo: String?,
@@ -30,8 +30,8 @@ class Eventos(private var idEventos: Int,
         "",
     )
 
-    fun getIdEventos(): Int {
-        return idEventos
+    fun getIdEvento(): Int {
+        return idEvento
     }
 
     fun getPlantilla(): Plantillas? {
@@ -77,8 +77,8 @@ class Eventos(private var idEventos: Int,
     fun getTimer(): String? {
         return timer
     }
-    fun setIdEventos(idEventos: Int) {
-        this.idEventos = idEventos
+    fun setIdEvento(idEvento: Int) {
+        this.idEvento = idEvento
     }
     fun setPlantilla(plantilla: Plantillas) {
         this.plantilla = plantilla
@@ -125,6 +125,6 @@ class Eventos(private var idEventos: Int,
     }
 
     override fun toString(): String {
-        return "Eventos(idEventos=$idEventos, plantilla=$plantilla, materia=$materia, parteCuerpo=$parteCuerpo, descripcion=$descripcion, comida=$comida, lugar=$lugar, status=$status, fechaRegistro=$fechaRegistro, fechaInicial=$fechaInicial, fechaFinal=$fechaFinal, timer=$timer)"
+        return "Eventos(idEvento=$idEvento, plantilla=$plantilla, materia=$materia, parteCuerpo=$parteCuerpo, descripcion=$descripcion, comida=$comida, lugar=$lugar, status=$status, fechaRegistro=$fechaRegistro, fechaInicial=$fechaInicial, fechaFinal=$fechaFinal, timer=$timer)"
     }
 }
