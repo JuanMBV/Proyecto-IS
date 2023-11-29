@@ -61,7 +61,7 @@ class EventosService(private val dataBase: DataBase) {
         try {
             db.rawQuery("SELECT * FROM eventos WHERE id_evento = $idEvento", null).use { cursor ->
                 cursor.moveToFirst()
-                evento.setIdEventos(cursor.getInt(0))
+                evento.setIdEvento(cursor.getInt(0))
                 val plantilla: Plantillas =
                     PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
                 evento.setPlantilla(plantilla)
@@ -106,7 +106,7 @@ class EventosService(private val dataBase: DataBase) {
                 .use { cursor ->
                     while (cursor.moveToNext()) {
                         val events = Eventos()
-                        events.setIdEventos(cursor.getInt(0))
+                        events.setIdEvento(cursor.getInt(0))
                         val plantilla: Plantillas =
                             PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
                         events.setPlantilla(plantilla)
@@ -174,7 +174,7 @@ class EventosService(private val dataBase: DataBase) {
             db.rawQuery("SELECT * FROM eventos WHERE status = 1", null).use { cursor ->
                 while (cursor.moveToNext()) {
                     val events = Eventos()
-                    events.setIdEventos(cursor.getInt(0))
+                    events.setIdEvento(cursor.getInt(0))
                     val plantilla: Plantillas =
                         PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
                     events.setPlantilla(plantilla)
@@ -240,12 +240,12 @@ class EventosService(private val dataBase: DataBase) {
 
         try {
             db.rawQuery(
-                "SELECT * FROM eventos WHERE id_plantilla = $idPlantilla ORDER BY fecha_final DESC",
+                "SELECT * FROM eventos WHERE id_plantilla = $idPlantilla AND status = 0 ORDER BY fecha_registro",
                 null
             ).use { cursor ->
                 while (cursor.moveToNext()) {
                     val events = Eventos()
-                    events.setIdEventos(cursor.getInt(0))
+                    events.setIdEvento(cursor.getInt(0))
                     val plantilla: Plantillas =
                         PlantillaService(dataBase).SelectPlantilla(cursor.getInt(1))
                     events.setPlantilla(plantilla)
@@ -421,11 +421,10 @@ class EventosService(private val dataBase: DataBase) {
         return status
     }
 
-    fun InsertComer(comida: String?, horaInicio: LocalDateTime?, horaFin: LocalDateTime?): Long {
+    fun InsertComer(comida: String?, horaInicio: LocalDateTime?): Long {
         val db = dataBase.writableDatabase
 
         val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        val horaFinFormat = horaFin?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         val now = LocalDateTime.of(LocalDate.now(), LocalTime.now()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
         val values = ContentValues().apply {
@@ -433,7 +432,6 @@ class EventosService(private val dataBase: DataBase) {
             put("comida", comida)
             put("fecha_registro", now)
             put("fecha_inicial", horaInicioFormat)
-            put("fecha_final", horaFinFormat)
         }
         var status: Long = 0
 
@@ -475,7 +473,7 @@ class EventosService(private val dataBase: DataBase) {
         return status
     }
 
-    fun InsertBreak(descripcion: String?,horaInicio: LocalDateTime?, horaFin: LocalDateTime?): Long {
+    fun InsertBreak(horaInicio: LocalDateTime?, horaFin: LocalDateTime?): Long {
         val db = dataBase.writableDatabase
 
         val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
@@ -484,7 +482,6 @@ class EventosService(private val dataBase: DataBase) {
 
         val values = ContentValues().apply {
             put("id_plantilla", 6)
-            put("descripcion", descripcion)
             put("fecha_registro", now)
             put("fecha_inicial", horaInicioFormat)
             put("fecha_final", horaFinFormat)
