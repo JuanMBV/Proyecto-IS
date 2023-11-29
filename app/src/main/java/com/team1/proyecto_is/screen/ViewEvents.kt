@@ -42,6 +42,9 @@ import androidx.navigation.NavController
 import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.MainActivity
 import com.team1.proyecto_is.R
+import com.team1.proyecto_is.component.ChooseColor
+import com.team1.proyecto_is.component.ChooseText
+import com.team1.proyecto_is.component.ListItemRow
 import com.team1.proyecto_is.model.*
 import com.team1.proyecto_is.service.*
 import com.team1.proyecto_is.ui.theme.*
@@ -163,137 +166,7 @@ fun EventsList(dataBase: DataBase){
 }
 
 
-@Composable
-// parametros
-//descripcion
-//num plantilla
-fun ListItemRow(evento : Eventos){
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(shape = MaterialTheme.shapes.medium)
-            // el color se va a definir de acuerdo a la plantilla
-            .background(
-                ChooseColor(
-                    evento
-                        .getPlantilla()
-                        ?.getIdPlantilla()
-                )
-            )
-            .padding(horizontal = 20.dp, vertical = 15.dp)
-        //.clickable(onClick = (TODO()))
 
-    ){
-        Text(
-            text = ChooseText(evento).toString(),
-            fontSize = 20.sp,
-            fontFamily = nunito,
-            color = Color.White
-        )
-
-    }
-}
-
-// metodo en el que dependiendo del número de plantilla, asigna color
-//al fondo del objeto de la lista
-@Composable
-fun ChooseColor(idPlantilla : Int?) : Color {
-    when (idPlantilla) {
-        //1 Estudiar - Rojo
-        1 -> {
-            return rojo
-        }
-        //2 Ejercicio - Naranja
-        2 -> {
-            return naranja
-        }
-        //3 Hobbies - Amarillo
-        3 -> {
-            return amarillo
-        }
-        //4 Comer - Verde
-        4 -> {
-            return verde
-        }
-        //5 Tarea - Turquesa
-        5 -> {
-            return turquesa
-        }
-        //6 Break - Azul
-        6 -> {
-            return azul
-        }
-        //7 Eventos - Morado
-        7 -> {
-            return morado
-        }
-        //8 Examen - Rosa
-        8 -> {
-            return rosa
-        }
-        else -> {
-            return fondo
-        }
-    }
-}
-
-@Composable
-fun ChooseText(evento: Eventos) : String? {
-    when (evento.getPlantilla()?.getIdPlantilla()) {
-        //1 Estudiar, 5 Tareas, 8 Examen - Materia
-        1, 5, 8 -> {
-            return evento.getMateria()
-        }
-        //2 Ejercicio - Naranja
-        2 -> {
-            return evento.getParteCuerpo()
-        }
-        //3 Hobbies, 6 Eventos
-        3,6 -> {
-            return evento.getDescripcion()
-        }
-        //4 Comer - Verde
-        4 -> {
-            return evento.getComida()
-        }
-        // 7 Break - Amarillo
-        7 -> {
-            return "Break"
-        }
-        else -> {
-            return ""
-        }
-    }
-}
-
-@Composable
-fun popUpComplete(texto : String?){
-    val context = LocalContext.current
-    val openDialog = remember { mutableStateOf(true) }
-
-    if (openDialog.value) {
-        AlertDialog(
-            onDismissRequest = { openDialog.value = false },
-            title = { Text( text = "Completar" ) },
-            text = { Text(text = "$texto\n¿Estás seguro que deseas completar?") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        openDialog.value = false
-                    }
-                ) {
-                    Text(text = "Completar", color = Color.Black)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { openDialog.value = false }
-                ) { Text(text = "Cancelar", color = Color.Black) }
-            },
-        )
-    }
-
-}
 
 
 // programacion

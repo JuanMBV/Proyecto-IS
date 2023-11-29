@@ -42,7 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.R
+import com.team1.proyecto_is.component.plantillaGlobal
+import com.team1.proyecto_is.navigation.AppNavigation
 import com.team1.proyecto_is.navigation.AppScreens
 import com.team1.proyecto_is.ui.theme.amarillo
 import com.team1.proyecto_is.ui.theme.azul
@@ -56,7 +59,7 @@ import com.team1.proyecto_is.ui.theme.turquesa
 import com.team1.proyecto_is.ui.theme.verde
 import kotlin.math.PI
 import kotlin.math.atan2
-
+import com.team1.proyecto_is.navigation.AppNavigation
 /**
  * cosas a checar
  * el popup no permite cancelar (on dismissrequest) (FALTA PROBAR)
@@ -67,7 +70,6 @@ fun SelectTemplate(navController: NavController){
 }
 //definimos una variable global (en esta clase) para cerrar / abrir el popUp
 var showPopUp by mutableStateOf(false)
-var clickOutside by mutableStateOf(false)
 
 
 @Composable
@@ -189,7 +191,6 @@ fun PieChart(
     var isCenterTapped by remember {
         mutableStateOf(false)
     }
-    var plantilla : String = ""
 
     // aqui se hace el if que dependiendo del valor del showPopUp, muestra el popUp
 
@@ -287,10 +288,9 @@ fun PieChart(
 
                 if (pieChartInput.isTapped) {
                     // le damos el valor a la variable que se pasa al AlertDialog
-                    plantilla = pieChartInput.description
+                    plantillaGlobal = pieChartInput.description
                     // cambiamos el valor para que se muestre el popUp
                     showPopUp = true
-                    clickOutside = false
                     val tabRotation = currentStartAngle - angleToDraw - 90f
                     rotate(tabRotation) {
                         drawRoundRect(
@@ -345,8 +345,7 @@ fun PieChart(
 
         }
         if(showPopUp){
-            popUp(plantilla = plantilla,navController = navController)
-            clickOutside = false
+            popUp(plantilla = plantillaGlobal, navController = navController)
         }
         /**
         if(clickOutside){
@@ -364,7 +363,6 @@ fun popUp(plantilla : String, navController: NavController){
         AlertDialog(
             onDismissRequest = {  // cuando se da click fuera del popUp
                 showPopUp = false
-                clickOutside = true
                 Log.d("Correcto", "Se cierra el popUp")
                                },
             confirmButton = {
@@ -384,7 +382,10 @@ fun popUp(plantilla : String, navController: NavController){
                 /** MANDAR A LA PAGINA DE VER EVENTOS POR PLANTILLA
                 aqui será un if, dependiendo del nombre de la plantilla te
                 mandara a su respectiva de ver eventos totales */
-                TextButton(onClick = { /*TODO*/ }) {
+                TextButton(onClick = {
+                    navController.navigate(AppScreens.ViewEventsByPlantilla.route)
+
+                }) {
                     Text(text = "Ver")
                 }
             },
