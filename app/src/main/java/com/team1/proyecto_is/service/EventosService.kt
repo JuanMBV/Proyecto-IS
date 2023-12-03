@@ -2,7 +2,7 @@ package com.team1.proyecto_is.service
 
 import android.content.ContentValues
 import android.util.Log
-import androidx.core.content.contentValuesOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.core.database.getStringOrNull
 import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.model.Eventos
@@ -11,6 +11,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+
 
 class EventosService(private val dataBase: DataBase) {
 
@@ -96,8 +97,8 @@ class EventosService(private val dataBase: DataBase) {
         return evento
     }
 
-    fun SelectAllEvents(): List<Eventos> {
-        val listEvents: MutableList<Eventos> = mutableListOf()
+    fun SelectAllEvents(): MutableList<Eventos> {
+        val listEvents: MutableList<Eventos> = mutableStateListOf<Eventos>()
 
         val db = dataBase.readableDatabase
 
@@ -310,7 +311,7 @@ class EventosService(private val dataBase: DataBase) {
         var rowsDeleted = 0
 
         try {
-            rowsDeleted = db.delete("eventos", "id=?", arrayOf(idEvent.toString()))
+            rowsDeleted = db.delete("eventos", "id_eventos=?", arrayOf(idEvent.toString()))
             Log.d("DeleteEvent", "Se elimino correctamente")
         } catch (e: Exception) {
             Log.d("DeleteEvent", e.toString())
@@ -330,8 +331,7 @@ class EventosService(private val dataBase: DataBase) {
         var rowsAffected = 0
 
         try {
-            rowsAffected =
-                db.update("eventos", values, "id_evento = ?", arrayOf(idEvent.toString()))
+            rowsAffected = db.update("eventos", values, "id_eventos = ?", arrayOf(idEvent.toString()))
             Log.d("CompleteEvent", "Se completo el evento!")
         } catch (e: Exception) {
             Log.d("Error CompleteEvent", e.toString())
@@ -401,7 +401,7 @@ class EventosService(private val dataBase: DataBase) {
         val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         val now = LocalDateTime.of(LocalDate.now(), LocalTime.now()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
-        val values = contentValuesOf().apply {
+        val values = ContentValues().apply {
             put("id_plantilla", 3)
             put("descripcion", descripcion)
             put("fecha_registro", now)
