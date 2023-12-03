@@ -2,6 +2,7 @@ package com.team1.proyecto_is.screen
 
 import android.graphics.Paint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -34,6 +35,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -359,6 +361,7 @@ fun PieChart(
 
 @Composable
 fun popUp(plantilla : String, navController: NavController){
+    val contexto = LocalContext.current
     if(showPopUp) {
         AlertDialog(
             onDismissRequest = {  // cuando se da click fuera del popUp
@@ -370,8 +373,10 @@ fun popUp(plantilla : String, navController: NavController){
                 aqui será un if, dependiendo del nombre de la plantilla te
                 mandara a su respectiva de creación*/
                     when (plantilla) {
-                        "Estudiar" -> navController.navigate(AppScreens.Add_Estudiar.route)
-                        else -> navController.navigate(AppScreens.Add_Estudiar.route)
+                        "Estudiar" -> {navController.navigate(AppScreens.Add_Estudiar.route)}
+                        "Hobbies" -> {navController.navigate(AppScreens.Add_Hobby.route)}
+                        else ->
+                            Toast.makeText(contexto, "No disponible", Toast.LENGTH_SHORT).show()
                     }
 
                 }) {

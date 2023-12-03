@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.R
 import com.team1.proyecto_is.component.ChooseColor
+import com.team1.proyecto_is.component.ChooseText
 import com.team1.proyecto_is.component.plantillaGlobal
 import com.team1.proyecto_is.component.sendIdPlantilla
 import com.team1.proyecto_is.navigation.AppScreens
@@ -46,7 +47,6 @@ import com.team1.proyecto_is.service.EventosService
 import com.team1.proyecto_is.ui.theme.fondo
 import com.team1.proyecto_is.ui.theme.nunito
 import com.team1.proyecto_is.ui.theme.nunito_bold
-import com.team1.proyecto_is.ui.theme.rojo
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -68,13 +68,13 @@ import java.util.Date
  */
 
 @Composable
-fun Add_Estudiar(navController: NavController, dataBase: DataBase){
-    ContentAdd_Estudiar(navController, dataBase)
+fun Add_Hobby(navController: NavController, dataBase: DataBase){
+    ContentAdd_Hobby(navController, dataBase)
 }
 
 
 @Composable
-fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
+fun ContentAdd_Hobby(navController: NavController,dataBase: DataBase) {
     Column(
         modifier = Modifier
             .background(fondo)
@@ -88,7 +88,7 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 25.dp)
-        ){
+        ) {
             Text(
                 text = "Nuevo evento de",
                 fontSize = 35.sp,
@@ -110,7 +110,7 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
                 }
             }
         }
-        // texto de "Estudiar"
+        // texto de "Hobbies"
         Text(
             text = plantillaGlobal,
             fontSize = 45.sp,
@@ -122,13 +122,14 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
         Spacer(modifier = Modifier.padding(top = 20.dp))
 
         // inicio de seccion de campo de texto
-        var entrada by remember { mutableStateOf("") }
+        var desc by remember { mutableStateOf("") }
+        var lugar by remember { mutableStateOf("") }
         val mContext = LocalContext.current
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = "Materia: ",
+                text = "Hobby: ",
                 fontSize = 20.sp,
                 textAlign = TextAlign.Start,
                 fontFamily = nunito_bold,
@@ -138,11 +139,11 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
             // campo de texto
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = entrada,
+                value = desc,
                 onValueChange = { valor ->
-                    if(valor.matches("[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ!¡¿?\\-: ]*".toRegex())) {
-                        entrada = valor
-                    } else{
+                    if (valor.matches("[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ!¡¿?\\-: ]*".toRegex())) {
+                        desc = valor
+                    } else {
                         Toast.makeText(mContext, "Dato no alfanumerico", Toast.LENGTH_SHORT).show();
                     }
 
@@ -156,9 +157,38 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
                     .padding(top = 25.dp)
             )
 
+            // especificación del lugar
+
+            Text(
+                text = "Lugar: ",
+                fontSize = 20.sp,
+                textAlign = TextAlign.Start,
+                fontFamily = nunito_bold,
+            )
+
+            // campo de texto
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = lugar,
+                onValueChange = { valor ->
+                    if (valor.matches("[a-zA-Z0-9áéíóúÁÉÍÓÚüÜ!¡¿?\\-: ]*".toRegex())) {
+                        lugar = valor
+                    } else {
+                        Toast.makeText(mContext, "Dato no alfanumerico", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                //aqui se muestra el que texto que indica el cuadro
+                label = { Text("") }
+            )
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 25.dp)
+            )
+
             // fin de seccion de campo de texto
 
-            // inicio de seccion de campo de horas de inicio / fin
+            // inicio de seccion de campo de horas de inicio
 
             // Fetching local context
 
@@ -171,214 +201,185 @@ fun ContentAdd_Estudiar(navController: NavController,dataBase: DataBase) {
 
             // Value for storing time as a string
             val inicio = remember { mutableStateOf("") }
-            val fin = remember { mutableStateOf("") }
 
             // Creating a TimePicker dialod
             val inicioTimePickerDialog = TimePickerDialog(
                 mContext,
-                {_, mHour : Int, mMinute: Int ->
+                { _, mHour: Int, mMinute: Int ->
 
                     // si la hora es 0 y el min esta entre 1 y 9
                     // O si la hora esta entre 1 y 9 y el min es 0
-                    if(range.contains(mHour)&&range.contains(mMinute)){
+                    if (range.contains(mHour) && range.contains(mMinute)) {
                         inicio.value = "0$mHour:0$mMinute"
                     }
                     // si el minuto esta entre 1 y 9, agregale el 0 antes
-                    else if(range.contains(mMinute)){
+                    else if (range.contains(mMinute)) {
                         inicio.value = "$mHour:0$mMinute"
                     }
                     // si la hora esta entre 1 y 9, agregale el 0 antes
-                    else if(range.contains(mHour)){
+                    else if (range.contains(mHour)) {
                         inicio.value = "0$mHour:$mMinute"
                     }
                     // si ambos son de dos cifras
-                    else{
+                    else {
                         inicio.value = "$mHour:$mMinute"
                     }
 
                 }, mHour, mMinute, false
             )
 
-            val finTimePickerDialog = TimePickerDialog(
-                mContext,
-                {_, mHour : Int, mMinute: Int ->
 
-                    // si la hora es 0 y el min esta entre 1 y 9
-                    // O si la hora esta entre 1 y 9 y el min es 0
-                    if(range.contains(mHour)&&range.contains(mMinute)){
-                        fin.value = "0$mHour:0$mMinute"
-                    }
-                    // si el minuto esta entre 1 y 9, agregale el 0 antes
-                    else if(range.contains(mMinute)){
-                        fin.value = "$mHour:0$mMinute"
-                    }
-                    // si la hora esta entre 1 y 9, agregale el 0 antes
-                    else if(range.contains(mHour)){
-                        fin.value = "0$mHour:$mMinute"
-                    }
-                    // si ambos son de dos cifras
-                    else{
-                        fin.value = "$mHour:$mMinute"
-                    }
-                }, mHour, mMinute, false
-            )
-
-
-            Column(modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally){
-                Row(){
-                    Button(onClick = { inicioTimePickerDialog.show() },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336)
-                        )) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Row() {
+                    Button(
+                        onClick = { inicioTimePickerDialog.show() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = ChooseColor(sendIdPlantilla(plantillaGlobal))
+                        )
+                    ) {
                         Icon(
                             painter = painterResource(R.drawable.icon_bell),
                             contentDescription = "",
                             modifier = Modifier.width(20.dp)
                         )
-                        Text(text = "  Hora Inicio",
+                        Text(
+                            text = "  Hora Inicio",
                             color = Color.White,
                             fontSize = 20.sp,
-                            fontFamily = nunito)
-                    }
-
-                    Row(){
-                        // Add a spacer of 100dp
-                        Spacer(modifier = Modifier.width(15.dp))
-
-                        Button(onClick = { finTimePickerDialog.show() },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336)
-                            )) {
-                            Icon(
-                                painter = painterResource(R.drawable.icon_ringingbell),
-                                contentDescription = "",
-                                modifier = Modifier.width(20.dp)
-                            )
-                            Text(text = "  Hora Fin",
-                                color = Color.White,
-                                fontFamily = nunito,
-                                fontSize = 20.sp)
-                        }
+                            fontFamily = nunito
+                        )
                     }
                 }
             }
 
 
-            Column(modifier = Modifier.fillMaxWidth()){
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                    horizontalArrangement = Arrangement.SpaceAround){
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
 
                     // Display selected time
-                    Text(text = " ${inicio.value}",
+                    Text(
+                        text = " ${inicio.value}",
                         fontSize = 20.sp,
-                        fontFamily = nunito)
-
-                    // Add a spacer of 100dp
-                    Spacer(modifier = Modifier.width(25.dp))
-
-                    // Display selected time
-                    Text(text = "${fin.value}",
-                        fontSize = 20.sp,
-                        fontFamily = nunito)
-                }
-            }
-
-            // fin de seccion de campo de horas de inicio / fin
-            Spacer(modifier = Modifier.height(30.dp))
-
-            // inicio de sección de selección de fecha
-            // Fetching the Local Context
-            val mmContext = LocalContext.current
-
-            // Declaring integer values
-            // for year, month and day
-            val mYear: Int
-            val mMonth: Int
-            val mDay: Int
-
-
-            // Fetching current year, month and day
-            mYear = mCalendar.get(Calendar.YEAR)
-            mMonth = mCalendar.get(Calendar.MONTH)
-            mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-
-            mCalendar.time = Date()
-
-            // Declaring a string value to
-            // store date in string format
-            val mDate = remember { mutableStateOf("") }
-
-            // Declaring DatePickerDialog and setting
-            // initial values as current values (present year, month and day)
-            val mDatePickerDialog = DatePickerDialog(
-                mmContext,
-                { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-                    // si el dia es un numero solo Y el mes tmbn
-                    if(range.contains(mDayOfMonth)&&range.contains(mMonth)){
-                        mDate.value = "0$mDayOfMonth/0${mMonth+1}/$mYear"
-                    }
-                    // si el dia es solo un numero
-                    else if(range.contains(mDayOfMonth)){
-                        mDate.value = "0$mDayOfMonth/${mMonth+1}/$mYear"
-                    }
-                    // si el mes es solo un numero
-                    else if(range.contains(mMonth)){
-                        mDate.value = "$mDayOfMonth/0${mMonth+1}/$mYear"
-                    }
-                    // si ambos son dos números
-                    else {
-                        mDate.value = "$mDayOfMonth/${mMonth + 1}/$mYear"
-                    }
-                }, mYear, mMonth, mDay
-            )
-
-            Column(modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-
-                // Creating a button that on
-                // click displays/shows the DatePickerDialog
-
-                Button(onClick = { mDatePickerDialog.show() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336)
-                    )) {
-                    Icon(
-                        painter = painterResource(R.drawable.icon_calendar),
-                        contentDescription = "",
-                        modifier = Modifier.width(20.dp)
+                        fontFamily = nunito
                     )
-                    Text(text = "  Escoge el día :D",
-                        color = Color.White,
-                        fontSize = 23.sp,
-                        fontFamily = nunito)
+
                 }
 
-                // Adding a space of 100dp height
+                // fin de seccion de campo de horas de inicio / fin
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Text(text = "${mDate.value}",
-                    fontSize = 20.sp,
-                    fontFamily = nunito)
-                GuardadoEstudiar(navController, dataBase, entrada.toString(), inicio.value, fin.value, mDate.value)
+                // inicio de sección de selección de fecha
+                // Fetching the Local Context
+                val mmContext = LocalContext.current
+
+                // Declaring integer values
+                // for year, month and day
+                val mYear: Int
+                val mMonth: Int
+                val mDay: Int
+
+
+                // Fetching current year, month and day
+                mYear = mCalendar.get(Calendar.YEAR)
+                mMonth = mCalendar.get(Calendar.MONTH)
+                mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+                mCalendar.time = Date()
+
+                // Declaring a string value to
+                // store date in string format
+                val mDate = remember { mutableStateOf("") }
+
+                // Declaring DatePickerDialog and setting
+                // initial values as current values (present year, month and day)
+                val mDatePickerDialog = DatePickerDialog(
+                    mmContext,
+                    { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+                        // si el dia es un numero solo Y el mes tmbn
+                        if (range.contains(mDayOfMonth) && range.contains(mMonth)) {
+                            mDate.value = "0$mDayOfMonth/0${mMonth + 1}/$mYear"
+                        }
+                        // si el dia es solo un numero
+                        else if (range.contains(mDayOfMonth)) {
+                            mDate.value = "0$mDayOfMonth/${mMonth + 1}/$mYear"
+                        }
+                        // si el mes es solo un numero
+                        else if (range.contains(mMonth)) {
+                            mDate.value = "$mDayOfMonth/0${mMonth + 1}/$mYear"
+                        }
+                        // si ambos son dos números
+                        else {
+                            mDate.value = "$mDayOfMonth/${mMonth + 1}/$mYear"
+                        }
+                    }, mYear, mMonth, mDay
+                )
+
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    // Creating a button that on
+                    // click displays/shows the DatePickerDialog
+
+                    Button(
+                        onClick = { mDatePickerDialog.show() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = ChooseColor(sendIdPlantilla(plantillaGlobal))
+                        )
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.icon_calendar),
+                            contentDescription = "",
+                            modifier = Modifier.width(20.dp)
+                        )
+                        Text(
+                            text = "  Escoge el día :D",
+                            color = Color.White,
+                            fontSize = 23.sp,
+                            fontFamily = nunito
+                        )
+                    }
+
+                    // Adding a space of 100dp height
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Text(
+                        text = "${mDate.value}",
+                        fontSize = 20.sp,
+                        fontFamily = nunito
+                    )
+                    GuardadoHobby(
+                        navController,
+                        dataBase,
+                        desc,
+                        inicio.value,
+                        mDate.value,
+                        lugar
+                    )
+                }
+                // fin de sección de selección de fecha
             }
-            // fin de sección de selección de fecha
-
-
-
         }
     }
 }
 
 
 @Composable
-fun GuardadoEstudiar(navController: NavController, dataBase: DataBase, text : String, inicio : String, fin : String, date : String){
-
+fun GuardadoHobby(navController: NavController, dataBase: DataBase, desc: String, inicio: String, date: String, lugar: String) {
     // boton de guardado
     val eventosService = EventosService(dataBase)
     val contexto = LocalContext.current
     val gInicio = "$date $inicio:00"
-    val gFin = "$date $fin:00"
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
 
 
@@ -389,31 +390,26 @@ fun GuardadoEstudiar(navController: NavController, dataBase: DataBase, text : St
         verticalArrangement = Arrangement.Bottom) {
         Button(
             onClick = { /* que guarde los datos TODO */
-                if (text == "" || inicio == "" || fin == "" || date == "") {
+                if (desc == "" || inicio == "" || date == "" || lugar == "") {
                     Toast.makeText(contexto, "Faltan datos", Toast.LENGTH_SHORT).show()
                 } else {
                     try {
                         val formatInicio = LocalDateTime.parse(gInicio, formatter)
-                        val formatFin = LocalDateTime.parse(gFin, formatter)
-                        if(formatFin.isBefore(formatInicio)){
-                            Toast.makeText(contexto, "Verifique su hora de fin", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Log.d("Correcto", "Se convirtio correctamente el texto")
-                            //agregamos el evento
-                            eventosService.InsertEstudiar(text, formatInicio, formatFin)
-                            Log.d("NOTA", "Ya agrego el evento")
-                            Toast.makeText(contexto, "Evento agregado", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack()
-                            navController.navigate(AppScreens.ViewEvents.route)
-                        }
+
+                        Log.d("Correcto", "Se convirtio correctamente el texto")
+                        eventosService.InsertHobbie(desc, formatInicio, lugar)
+                        Log.d("NOTA","Ya agrego el evento")
+                        Toast.makeText(contexto, "Evento agregado", Toast.LENGTH_SHORT).show()
+                        navController.popBackStack()
+                        navController.navigate(AppScreens.ViewEvents.route)
                     } catch (e: DateTimeParseException) {
                         Toast.makeText(contexto, "Algo salió mal", Toast.LENGTH_SHORT).show()
-                        println("Invalid date-time string: $gInicio / $gFin")
+                        println("Invalid date-time string: $gInicio ")
                         Log.d("Error al convertir texto", e.toString())
                     }
                 }
             },
-            colors = ButtonDefaults.buttonColors(containerColor = rojo)
+            colors = ButtonDefaults.buttonColors(containerColor = ChooseColor(sendIdPlantilla(plantillaGlobal)))
         ) {
             Icon(
                 painter = painterResource(R.drawable.icon_check),
@@ -430,14 +426,13 @@ fun GuardadoEstudiar(navController: NavController, dataBase: DataBase, text : St
 }
 
 
-
 /**
 
 
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewAdd_Estudiar(){
-    val navController = rememberNavController()
-    ContentAdd_Estudiar(navController)
+val navController = rememberNavController()
+ContentAdd_Estudiar(navController)
 }
-*/
+ */

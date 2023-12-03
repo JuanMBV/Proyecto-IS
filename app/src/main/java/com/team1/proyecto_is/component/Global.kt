@@ -293,17 +293,13 @@ fun EventsListCompleted(dataBase: DataBase){
                 confirmValueChange = {
                     when(it){
                         DismissValue.DismissedToEnd ->{
-                            Log.d("Plantilla ID", "ENTRO AL WHEN")
-                            // para completar el evento (izquierda a derecha)
-                            eventosService.CompleteEvent(item.getIdEventos())
-                            Log.d("Plantilla ID", "OBTUVO EL ID DEL EVENTO")
-                            listEvents.remove(item)
-                            Log.d("Plantilla ID", "REMOVIO EL EVENTO DE LA PANTALLA")
-                            Toast.makeText(contexto, "Completado", Toast.LENGTH_SHORT).show()
-                            //}
+                            // NADA
                         }
                         DismissValue.DismissedToStart ->{
-                            // NADA
+                            //para eliminar el evento (derecha a izquierda)
+                            eventosService.DeleteEvent(item.getIdEvento())
+                            listEvents.remove(item)
+                            Toast.makeText(contexto, "Eliminado", Toast.LENGTH_SHORT).show()
                         }
                         DismissValue.Default->{
                             // NADA
@@ -323,9 +319,9 @@ fun EventsListCompleted(dataBase: DataBase){
                         }
                 },
                 dismissContent = {
-                    ListItemRow(item)
+                    ListItemRowCompletado(item)
                 },
-                directions = setOf(DismissDirection.StartToEnd),
+                directions = setOf(DismissDirection.EndToStart),
             )
 
         }
@@ -365,14 +361,14 @@ fun EventsListPlantilla(dataBase: DataBase){
                     when(it){
                         DismissValue.DismissedToEnd ->{
                             // para completar el evento (izquierda a derecha)
-                            eventosService.CompleteEvent(item.getIdEventos())
+                            eventosService.CompleteEvent(item.getIdEvento())
                             listEvents.remove(item)
                             Toast.makeText(contexto, "Completado", Toast.LENGTH_SHORT).show()
                             //}
                         }
                         DismissValue.DismissedToStart ->{
                             //para eliminar el evento (derecha a izquierda)
-                            eventosService.DeleteEvent(item.getIdEventos())
+                            eventosService.DeleteEvent(item.getIdEvento())
                             listEvents.remove(item)
                             Toast.makeText(contexto, "Eliminado", Toast.LENGTH_SHORT).show()
                         }

@@ -30,7 +30,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     // Initialize Data Base
                     val db = InitializeDatabaseConnection(this)
-
                     InsertPlantillas(db)
                     PrintPlantillas(db)
                     //InsertEventos(db)

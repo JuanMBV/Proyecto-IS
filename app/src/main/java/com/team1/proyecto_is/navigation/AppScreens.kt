@@ -5,5 +5,8 @@ sealed class AppScreens (val route: String) {
     object ViewEvents : AppScreens("view_events")
     object SplashScreen : AppScreens("splash_screen")
     object Add_Estudiar : AppScreens("add_estudiar")
+    object Add_Hobby : AppScreens("add_hobby")
     object ViewEventsByPlantilla : AppScreens("view_events_by_plantilla")
+    object ViewEventsCompleted : AppScreens("view_events_completed")
+
 }

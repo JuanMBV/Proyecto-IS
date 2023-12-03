@@ -46,6 +46,7 @@ import com.team1.proyecto_is.component.ChooseColor
 import com.team1.proyecto_is.component.ChooseText
 import com.team1.proyecto_is.component.ListItemRow
 import com.team1.proyecto_is.model.*
+import com.team1.proyecto_is.navigation.AppScreens
 import com.team1.proyecto_is.service.*
 import com.team1.proyecto_is.ui.theme.*
 
@@ -53,11 +54,11 @@ import com.team1.proyecto_is.ui.theme.*
 
 @Composable
 fun ViewEvents(navController: NavController, dataBase: DataBase) {
-    ContentViewEvents(dataBase)
+    ContentViewEvents(navController, dataBase)
 }
 
 @Composable
-fun ContentViewEvents(dataBase: DataBase) {
+fun ContentViewEvents(navController: NavController, dataBase: DataBase) {
     Column(
         modifier = Modifier.background(Color(0xFFFCFBF2)),
     ) {
@@ -78,7 +79,9 @@ fun ContentViewEvents(dataBase: DataBase) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ){
-                IconButton(onClick = { /* nos va a mandar a pagina de completados*/ }) {
+                IconButton(onClick = {
+                    navController.navigate(AppScreens.ViewEventsCompleted.route)
+                }) {
                     Icon(
                         painter = painterResource(R.drawable.icon_check_green),
                         contentDescription = "",
@@ -126,14 +129,14 @@ fun EventsList(dataBase: DataBase){
                     when(it){
                         DismissValue.DismissedToEnd ->{
                             // para completar el evento (izquierda a derecha)
-                            eventosService.CompleteEvent(item.getIdEventos())
+                            eventosService.CompleteEvent(item.getIdEvento())
                             listEvents.remove(item)
                             Toast.makeText(contexto, "Completado", Toast.LENGTH_SHORT).show()
                             //}
                         }
                         DismissValue.DismissedToStart ->{
                             //para eliminar el evento (derecha a izquierda)
-                            eventosService.DeleteEvent(item.getIdEventos())
+                            eventosService.DeleteEvent(item.getIdEvento())
                             listEvents.remove(item)
                             Toast.makeText(contexto, "Eliminado", Toast.LENGTH_SHORT).show()
                         }
@@ -167,11 +170,11 @@ fun EventsList(dataBase: DataBase){
 
 
 
-// programacion
-
+/**
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewViewEvents() {
     val mainActivity = MainActivity()
     ContentViewEvents(mainActivity.InitializeDatabaseConnection(LocalContext.current))
 }
+*/

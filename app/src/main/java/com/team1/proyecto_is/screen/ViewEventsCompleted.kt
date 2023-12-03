@@ -46,6 +46,7 @@ import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.MainActivity
 import com.team1.proyecto_is.R
 import com.team1.proyecto_is.component.ChooseColor
+import com.team1.proyecto_is.component.EventsListCompleted
 import com.team1.proyecto_is.component.EventsListPlantilla
 import com.team1.proyecto_is.component.ListItemRow
 import com.team1.proyecto_is.component.idPlantillaGlobal
@@ -60,12 +61,12 @@ import com.team1.proyecto_is.screen.EventsList
 
 
 @Composable
-fun ViewEventsByPlantilla(navController: NavController, dataBase: DataBase) {
-    ContentViewEventsPlantilla(navController, dataBase)
+fun ViewEventsCompleted(navController: NavController, dataBase: DataBase) {
+    ContentViewEventsCompleted(navController, dataBase)
 }
 
 @Composable
-fun ContentViewEventsPlantilla(navController: NavController, dataBase: DataBase) {
+fun ContentViewEventsCompleted(navController: NavController, dataBase: DataBase) {
     Column(
         modifier = Modifier
             .background(fondo)
@@ -75,37 +76,37 @@ fun ContentViewEventsPlantilla(navController: NavController, dataBase: DataBase)
         horizontalAlignment = Alignment.Start,
     ) {
         Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 25.dp)
-    ){
-        Text(
-            text = "Eventos de",
-            fontSize = 35.sp,
-            fontFamily = nunito,
-        )
-        // boton de cerrado
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            IconButton(onClick = {
-                navController.navigate(AppScreens.SelectTemplate.route)
-            }) {
-                Icon(
-                    painter = painterResource(R.drawable.icon_close),
-                    contentDescription = ""
-                )
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 25.dp)
+        ){
+            Text(
+                text = "Eventos",
+                fontSize = 35.sp,
+                fontFamily = nunito,
+            )
+            // boton de cerrado
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(onClick = {
+                    navController.navigate(AppScreens.SelectTemplate.route)
+                }) {
+                    Icon(
+                        painter = painterResource(R.drawable.icon_close),
+                        contentDescription = ""
+                    )
+                }
             }
         }
-    }
-        // texto de "Estudiar"
+        // texto de "Completados"
         Text(
-            text = plantillaGlobal,
+            text = "Completados",
             fontSize = 45.sp,
             textAlign = TextAlign.Start,
             fontFamily = nunito_bold,
-            color = ChooseColor(sendIdPlantilla(plantillaGlobal)),
+            color = verde,
         )
     }
     Column(
@@ -114,7 +115,7 @@ fun ContentViewEventsPlantilla(navController: NavController, dataBase: DataBase)
 
         ){
         Row() {
-            EventsListPlantilla(dataBase)
+            EventsListCompleted(dataBase)
         }
     }
 }

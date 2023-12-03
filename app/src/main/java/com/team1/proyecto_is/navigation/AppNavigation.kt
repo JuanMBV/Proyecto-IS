@@ -6,10 +6,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.screen.Add_Estudiar
+import com.team1.proyecto_is.screen.Add_Hobby
 import com.team1.proyecto_is.screen.SelectTemplate
 import com.team1.proyecto_is.screen.SplashScreen
 import com.team1.proyecto_is.screen.ViewEvents
 import com.team1.proyecto_is.screen.ViewEventsByPlantilla
+import com.team1.proyecto_is.screen.ViewEventsCompleted
 
 @Composable
 fun AppNavigation(dataBase: DataBase){
@@ -29,8 +31,14 @@ fun AppNavigation(dataBase: DataBase){
         composable(route = AppScreens.Add_Estudiar.route){
             Add_Estudiar(navController, dataBase)
         }
+        composable(route = AppScreens.Add_Hobby.route){
+            Add_Hobby(navController, dataBase)
+        }
         composable(route = AppScreens.ViewEventsByPlantilla.route){
             ViewEventsByPlantilla(navController, dataBase)
+        }
+        composable(route = AppScreens.ViewEventsCompleted.route){
+            ViewEventsCompleted(navController, dataBase)
         }
     }
 }

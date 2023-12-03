@@ -401,7 +401,7 @@ class EventosService(private val dataBase: DataBase) {
         val horaInicioFormat = horaInicio?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         val now = LocalDateTime.of(LocalDate.now(), LocalTime.now()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
-        val values = contentValuesOf().apply {
+        val values = ContentValues().apply {
             put("id_plantilla", 3)
             put("descripcion", descripcion)
             put("fecha_registro", now)
