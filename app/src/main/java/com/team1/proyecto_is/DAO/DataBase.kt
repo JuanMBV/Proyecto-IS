@@ -26,9 +26,9 @@ class DataBase(context: Context?): SQLiteOpenHelper(context, "Ahora_Si.db", null
                     + "comida TEXT,"
                     + "lugar TEXT,"
                     + "status INTEGER DEFAULT 0,"
-                    + "fecha_registro DATETIME,"
-                    + "fecha_inicial DATETIME,"
-                    + "fecha_final DATETIME,"
+                    + "fecha_registro DATETIME," // fecha cuando se crea el evento
+                    + "fecha_inicial DATETIME," //fecha de inicio de recordatorio (fecha y hora)
+                    + "fecha_final DATETIME," // fecha de fin de recordatorio (fecha y hora)
                     + "timer TEXT,"
                     + "FOREIGN KEY(id_plantilla) REFERENCES plantillas(id_plantilla)"
                     + ")"

@@ -25,3 +25,13 @@ val azul = Color(0xFF3D65CA)
 val fondo = Color(0xFFFCFBF2)
 val splash = Color(0xFFf5C045)
 
+val moradoC = Color(0xFF9853A1)
+val rosaC = Color(0xFFBD3D69)
+val rojoC = Color(0xFFB82B28)
+val naranjaC = Color(0xFFC17130)
+val amarilloC = Color(0xFFC8A539)
+val verdeC = Color(0xFF789D2C)
+val turquesaC = Color(0xFF41999B)
+val azulC = Color(0xFF3150A1)
+
+
