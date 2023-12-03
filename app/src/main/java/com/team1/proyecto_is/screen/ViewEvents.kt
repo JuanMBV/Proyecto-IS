@@ -114,8 +114,6 @@ fun EventsList(dataBase: DataBase){
 // Llena la lista con los elementos de eventosService.SelectAllEvents()
     listEvents.addAll(eventosService.SelectAllEvents())
     val contexto = LocalContext.current
-    print(listEvents)
-
     LazyColumn(
         state = rememberLazyListState(),
         verticalArrangement = Arrangement.spacedBy(15.dp)

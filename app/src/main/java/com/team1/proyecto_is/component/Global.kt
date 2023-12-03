@@ -10,18 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +30,7 @@ import com.team1.proyecto_is.DAO.DataBase
 import com.team1.proyecto_is.model.Eventos
 import com.team1.proyecto_is.service.EventosService
 import com.team1.proyecto_is.ui.theme.*
+
 
 // declaración de variables
 var plantillaGlobal = ""
@@ -259,10 +257,85 @@ fun ListItemRowCompletado(evento : Eventos){
             fontFamily = nunito,
             color = Color.White
         )
-
     }
 }
 
+
+// metodo que muestra en pantalla los eventos completados
+// por eventos completados, nos referimos a TODAS las plantillas
+// como ya estan completados, no permite el volver a completar
+// solo el eliminado
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EventsListCompleted(dataBase: DataBase){
+    //val popup = remember { mutableStateOf(false) }
+    val eventosService = EventosService(dataBase)
+// Cambia la declaración de listEvents
+    val listEvents = remember { mutableStateListOf<Eventos>() }
+    listEvents.clear() // Limpia la lista antes de agregar nuevos eventos
+// Llena la lista con los elementos de eventosService.SelectAllEvents()
+    Log.d("Plantilla ID", "Se hara la query de selectPerPlantilla")
+    listEvents.addAll(eventosService.SelectCompleteEvents())
+    Log.d("Plantilla ID", "Se hizo la query de selectPerPlantilla")
+
+    val contexto = LocalContext.current
+    print(listEvents)
+
+    LazyColumn(
+        state = rememberLazyListState(),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ){
+        // por cada item de la lista de objetos listEvents
+        items(listEvents, key = { listEvents -> listEvents.hashCode()}) {
+                item ->
+            Log.d("Plantilla ID", "primer item de la lista")
+            val state = rememberDismissState(
+                confirmValueChange = {
+                    when(it){
+                        DismissValue.DismissedToEnd ->{
+                            Log.d("Plantilla ID", "ENTRO AL WHEN")
+                            // para completar el evento (izquierda a derecha)
+                            eventosService.CompleteEvent(item.getIdEventos())
+                            Log.d("Plantilla ID", "OBTUVO EL ID DEL EVENTO")
+                            listEvents.remove(item)
+                            Log.d("Plantilla ID", "REMOVIO EL EVENTO DE LA PANTALLA")
+                            Toast.makeText(contexto, "Completado", Toast.LENGTH_SHORT).show()
+                            //}
+                        }
+                        DismissValue.DismissedToStart ->{
+                            // NADA
+                        }
+                        DismissValue.Default->{
+                            // NADA
+                        }
+                    }
+                    true
+                }
+            )
+            SwipeToDismiss(
+                state = state,
+                background = {
+                    val color =
+                        when(state.dismissDirection){
+                            DismissDirection.EndToStart -> Color.Transparent
+                            DismissDirection.StartToEnd -> Color.Transparent
+                            null -> Color.Transparent
+                        }
+                },
+                dismissContent = {
+                    ListItemRow(item)
+                },
+                directions = setOf(DismissDirection.StartToEnd),
+            )
+
+        }
+    }
+}
+
+// metodo que nos muestra en pantalla los eventos por plantilla
+// solo los eventos por plantilla que faltan de completar
+// como no estan completados, se pueden marcar como completados
+// o se pueden eliminar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventsListPlantilla(dataBase: DataBase){
