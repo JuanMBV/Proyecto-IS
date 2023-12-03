@@ -165,6 +165,14 @@ class EventosService(private val dataBase: DataBase) {
         return listEvents
     }
 
+    fun getNearestEvent(): List<Eventos> {
+        val eventsList = SelectAllEvents()
+        return eventsList
+            .filter { it.getFechaInicial() != null }
+            .sortedBy { it.getFechaInicial() }
+            .toList()
+    }
+
     fun SelectCompleteEvents(): List<Eventos> {
         val listEvents: MutableList<Eventos> = mutableListOf()
 
