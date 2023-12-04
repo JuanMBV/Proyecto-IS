@@ -319,7 +319,7 @@ class EventosService(private val dataBase: DataBase) {
         var rowsDeleted = 0
 
         try {
-            rowsDeleted = db.delete("eventos", "id_eventos=?", arrayOf(idEvent.toString()))
+            rowsDeleted = db.delete("eventos", "id_evento=?", arrayOf(idEvent.toString()))
             Log.d("DeleteEvent", "Se elimino correctamente")
         } catch (e: Exception) {
             Log.d("DeleteEvent", e.toString())
@@ -339,7 +339,7 @@ class EventosService(private val dataBase: DataBase) {
         var rowsAffected = 0
 
         try {
-            rowsAffected = db.update("eventos", values, "id_eventos = ?", arrayOf(idEvent.toString()))
+            rowsAffected = db.update("eventos", values, "id_evento = ?", arrayOf(idEvent.toString()))
             Log.d("CompleteEvent", "Se completo el evento!")
         } catch (e: Exception) {
             Log.d("Error CompleteEvent", e.toString())

@@ -25,10 +25,10 @@ class AlarmNotification: BroadcastReceiver(){
     fun sendNotification(context: Context){
         val notificationManager = context.getSystemService(NotificationManager::class.java)
         val nearestEvent = EventosService(DataBase(context)).getNearestEvent()
-
-        nearestEvent?.forEach { evento ->
+        println("Eventos $nearestEvent")
+        nearestEvent.forEach { evento ->
             val text = getTextFromEvent(evento)
-
+            println("text $text")
             val notification = NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
                 .setContentTitle("Tienes un evento pa'")
                 .setContentText("Toco estudiar pa' $text")
@@ -42,13 +42,13 @@ class AlarmNotification: BroadcastReceiver(){
     }
 
     fun getTextFromEvent(evento: Eventos): String{
-        return when(evento.getIdEvento()){
-            1, 5, 8 -> evento.getMateria().toString()
-            2 -> evento.getParteCuerpo().toString()
-            3, 7 -> evento.getDescripcion().toString()
-            4 -> evento.getComida().toString()
-            6 -> "Toco descansar pa'"
-            else -> "si"
+        when(evento.getPlantilla()?.getIdPlantilla()){
+            1, 5, 8 -> return evento.getMateria().toString()
+            2 -> return evento.getParteCuerpo().toString()
+            3, 7 -> return evento.getDescripcion().toString()
+            4 -> return evento.getComida().toString()
+            6 -> return "Toco descansar pa'"
+            else -> return "si"
         }
     }
 }

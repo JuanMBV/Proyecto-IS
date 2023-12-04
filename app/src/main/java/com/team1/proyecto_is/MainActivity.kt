@@ -15,6 +15,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
 
                     // Notifications
                     createNotificationChannel()
+
                     sheduleNotification()
                 }
             }
@@ -128,8 +130,8 @@ class MainActivity : ComponentActivity() {
             println(element.toString())
         }
     }
-}
 
+/**
 @Preview(showSystemUi = true)
 @Composable
 fun GreetingPreview() {
@@ -138,3 +140,4 @@ fun GreetingPreview() {
     }
 
 }
+        **/
