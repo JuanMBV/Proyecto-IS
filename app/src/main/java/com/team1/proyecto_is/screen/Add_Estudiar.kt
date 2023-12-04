@@ -1,7 +1,12 @@
 package com.team1.proyecto_is.screen
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
@@ -42,6 +47,8 @@ import com.team1.proyecto_is.component.ChooseColor
 import com.team1.proyecto_is.component.plantillaGlobal
 import com.team1.proyecto_is.component.sendIdPlantilla
 import com.team1.proyecto_is.navigation.AppScreens
+import com.team1.proyecto_is.notification.AlarmNotification
+import com.team1.proyecto_is.notification.SheduleNotification
 import com.team1.proyecto_is.service.EventosService
 import com.team1.proyecto_is.ui.theme.fondo
 import com.team1.proyecto_is.ui.theme.nunito
@@ -401,6 +408,11 @@ fun GuardadoEstudiar(navController: NavController, dataBase: DataBase, text : St
                             Log.d("Correcto", "Se convirtio correctamente el texto")
                             //agregamos el evento
                             eventosService.InsertEstudiar(text, formatInicio, formatFin)
+
+                            //notificacion
+                            SheduleNotification().sheduleNotification(contexto, "estudiar pa' $text", formatInicio)
+
+
                             Log.d("NOTA", "Ya agrego el evento")
                             Toast.makeText(contexto, "Evento agregado", Toast.LENGTH_SHORT).show()
                             navController.popBackStack()
@@ -428,8 +440,6 @@ fun GuardadoEstudiar(navController: NavController, dataBase: DataBase, text : St
         }
     }
 }
-
-
 
 /**
 

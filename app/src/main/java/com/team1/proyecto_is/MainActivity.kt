@@ -46,40 +46,18 @@ class MainActivity : ComponentActivity() {
                     val db = InitializeDatabaseConnection(this)
                     InsertPlantillas(db)
                     PrintPlantillas(db)
+                    // Notifications
+                    createNotificationChannel()
                     //InsertEventos(db)
                     PrintEventos(db)
                     AppNavigation(db)
 
-                    // Notifications
-                    createNotificationChannel()
 
-                    sheduleNotification()
+
+                    //sheduleNotification()
                 }
             }
         }
-    }
-
-    @SuppressLint("ScheduleExactAlarm")
-    private fun sheduleNotification() {
-        val intent = Intent(applicationContext, AlarmNotification::class.java)
-
-        val nearestEvent = EventosService(DataBase(applicationContext)).getNearestEvent()
-
-        nearestEvent?.forEach{ event ->
-            val calendar: Calendar = Calendar.getInstance()
-            calendar.timeInMillis = event.getFechaInicial()?.atZone(java.time.ZoneId.systemDefault())?.toInstant()!!.toEpochMilli()?:0
-
-            val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                NOTIFICATION_ID,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
-        }
-
-
     }
 
     private fun createNotificationChannel() {

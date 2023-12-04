@@ -19,36 +19,24 @@ class AlarmNotification: BroadcastReceiver(){
     }
 
     override fun onReceive(context: Context, p1: Intent?) {
-        sendNotification(context)
+        val intent = p1
+        val valorRecibido = intent?.getStringExtra("text")
+        sendNotification(context, valorRecibido.toString())
     }
 
-    fun sendNotification(context: Context){
+    fun sendNotification(context: Context, text: String){
         val notificationManager = context.getSystemService(NotificationManager::class.java)
-        val nearestEvent = EventosService(DataBase(context)).getNearestEvent()
-        println("Eventos $nearestEvent")
-        nearestEvent.forEach { evento ->
-            val text = getTextFromEvent(evento)
-            println("text $text")
-            val notification = NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
-                .setContentTitle("Tienes un evento pa'")
-                .setContentText("Toco estudiar pa' $text")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setAutoCancel(true)
-                .build()
 
-            val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.notify(NOTIFICATION_ID, notification)
-        }
+        val notification = NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
+            .setContentTitle("Tienes un evento pa'")
+            .setContentText("Tocó $text")
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setAutoCancel(true)
+            .build()
+
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(text.hashCode(), notification)
+
     }
 
-    fun getTextFromEvent(evento: Eventos): String{
-        when(evento.getPlantilla()?.getIdPlantilla()){
-            1, 5, 8 -> return evento.getMateria().toString()
-            2 -> return evento.getParteCuerpo().toString()
-            3, 7 -> return evento.getDescripcion().toString()
-            4 -> return evento.getComida().toString()
-            6 -> return "Toco descansar pa'"
-            else -> return "si"
-        }
-    }
 }

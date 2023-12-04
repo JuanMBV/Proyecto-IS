@@ -43,6 +43,7 @@ import com.team1.proyecto_is.component.ChooseText
 import com.team1.proyecto_is.component.plantillaGlobal
 import com.team1.proyecto_is.component.sendIdPlantilla
 import com.team1.proyecto_is.navigation.AppScreens
+import com.team1.proyecto_is.notification.SheduleNotification
 import com.team1.proyecto_is.service.EventosService
 import com.team1.proyecto_is.ui.theme.fondo
 import com.team1.proyecto_is.ui.theme.nunito
@@ -399,6 +400,10 @@ fun GuardadoHobby(navController: NavController, dataBase: DataBase, desc: String
                         Log.d("Correcto", "Se convirtio correctamente el texto")
                         eventosService.InsertHobbie(desc, formatInicio, lugar)
                         Log.d("NOTA","Ya agrego el evento")
+
+                        //notificacion
+                        SheduleNotification().sheduleNotification(contexto, "$desc en $lugar", formatInicio)
+
                         Toast.makeText(contexto, "Evento agregado", Toast.LENGTH_SHORT).show()
                         navController.popBackStack()
                         navController.navigate(AppScreens.ViewEvents.route)
